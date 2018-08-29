@@ -1,7 +1,7 @@
 # L∃∀N Sandbox
 
-- [logic_and_proof]: working through exercises in https://leanprover.github.io/logic_and_proof/
-- [projecteurler]: working through problems from https://projecteuler.net/
+- [logic_and_proof/](logic_and_proof/): working through exercises in https://leanprover.github.io/logic_and_proof/
+- [projecteurler/](projecteurler/): working through problems from https://projecteuler.net/
 
 ## Links
 
