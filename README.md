@@ -1,0 +1,132 @@
+# L∃∀N Sandbox
+
+- [logic_and_proof]: working through exercises in https://leanprover.github.io/logic_and_proof/
+- [projecteurler]: working through problems from https://projecteuler.net/
+
+## Links
+
+- https://leanprover.zulipchat.com
+- https://github.com/leanprover/lean
+- https://leanprover.github.io/
+- https://xenaproject.wordpress.com/
+
+## L∃∀N Quick Reference
+
+- Commands
+  - `#check`
+  - `#print`
+  - `#exit`
+  - `#reduce`
+  - `#eval`
+  - `set_option <name> <value>`
+- Options
+  - `pp.implicit`
+  - `pp.universes`
+  - `pp.coercions`
+  - `pp.notation`
+  - `pp.beta`
+- Attributes
+  - Used by tactics
+    - `[class]`
+    - `[instance]`
+    - `[priority n]`: class resolution priority
+    - `[refl]`: `reflexivity`, `calc`, `simp`
+    - `[symm]`: `symmetry`
+    - `[trans]`: `transitivity`, `calc`, `simp`
+    - `[congr]`: `simp`
+    - `[simp]`: `simp`
+    - `[recursor]`: `induction`
+  - Unfolding
+    - `[reducible]`
+    - `[semireducible]`
+    - `[irreducible]`
+  - Elaboration
+    - `[elab_with_expected_type]`
+    - `[elab_simple]`
+    - `[elab_as_eliminator]`
+- Tactics
+  - Basic
+    - `intro id?`
+    - `intros id*`
+    - `introv id*`
+    - `rename id id`
+    - `apply expr`
+    - `fapply expr`
+    - `eapply expr`
+    - `apply_with expr (tactic.apply_cfg)`
+    - `apply_instance`
+    - `refine expr`
+    - `change expr (with expr)? (at (* | (⊢ | id)*))?`
+    - `exact expr`
+    - `exacts ([expr, ...] | expr)`
+    - `revert id*`
+    - `generalize id? : expr = id`
+    - `admit`
+    - `contradiction`
+    - `trivial`
+    - `exfalso`
+    - `clear id*`
+    - `specialize expr`
+    - `by_cases expr (with id)?`
+    - `by_contradiction id?`
+  - Equality and Other Relations
+    - `refl`
+    - `symmetry`
+    - `transitivity ?expr`
+  - Structured Proofs
+    - `assume (: expr | <binders>)`
+    - `have id? (: expr)? (:= expr)?`
+    - `let id? (: expr)? (:= expr)?`
+    - `suffices id? (: expr)?`
+    - `show expr`
+    - `from expr`
+  - Inductive Types
+    - `induction expr (using id)? (with id*)? (generalizing id*)?`
+    - `cases (id :)? expr (with id*)?`
+    - `case id id* { tactic }`
+    - `destruct expr`
+    - `existsi`
+    - `constructor`
+    - `econstructor`
+    - `left`
+    - `right`
+    - `split`
+    - `injection expr (with id*)?`
+    - `injections (with id*)?`
+  - Combinators
+    - `repeat { tactic }`
+    - `try { tactic }`
+    - `skip`
+    - `solve1 { tactic }`
+    - `abstract id? { tactic }`
+    - `all_goals { tactic }`
+    - `any_goals { tactic }`
+    - `done`
+    - `fail_if_success { tactic }`
+    - `success_if_fail { tactic }`
+    - `guard_target expr`
+    - `guard_hyp id := expr`
+  - Rewriter
+    - `rw ([ (←? expr), ... ] | ←? expr) (at (* | (⊢ | id)*))? tactic.rewrite_cfg?`
+    - `rwa`
+    - `erw`
+    - `subst expr`
+  - Simplifier and Congruence Closure
+    - `simp only? (* | [(* | (- id | expr)), ...]?) (with id*)? (at (* | (⊢ | id)*))? tactic.simp_config_ext?`
+    - `dsimp only? (* | [(* | (- id | expr)), ...]?) (with id*)? (at (* | (⊢ | id)*))? tactic.dsimp_config?`
+    - `simp_intros id* only? (* | [(* | (- id | expr)), ...]?) (with id*)? tactic.simp_intros_config?`
+    - `unfold id* (at (* | (⊢ | id)*))? tactic.unfold_config?`
+    - `unfold1 id* (at (* | (⊢ | id)*))? tactic.unfold_config?`
+    - `dunfold id* (at (* | (⊢ | id)*))? tactic.dunfold_config?`
+    - `delta id* (at (* | (⊢ | id)*))?`
+    - `unfold_projs`
+    - `trace_simp_set`
+    - `ac_refl`
+    - `cc`
+  - Other
+    - `trace_state`
+    - `trace a`
+    - `type_check expr`
+    - `apply_opt_param`
+    - `apply_auto_param`
+    - `dedup`
