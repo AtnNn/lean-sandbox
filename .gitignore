@@ -1,1 +1,4 @@
-leanpkg.path
+/leanpkg.path
+/_target
+
+*#

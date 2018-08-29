@@ -1,7 +1,11 @@
 [package]
-name = "lean-projecteuler"
+name = "lean-sandbox"
 version = "0.1"
 lean_version = "3.4.1"
-path = "src"
 
 [dependencies]
+mathlib = {git = "https://github.com/leanprover/mathlib", rev = "905345a2ceaa5d0c7bc2f6310026961416b2cae4"}
+lean-tidy = {git = "https://github.com/semorrison/lean-tidy", rev = "42582a23adc92e5861b3b5850fdb77f3990366b0"}
+mini_crush = {git = "https://github.com/leanprover/mini_crush", rev = "03c955233c20accaaa2f8445dd910cf9ec2cac58"}
+qelim = {git = "https://github.com/skbaek/qelim", rev = "99e9ca205a1fc061343dfac02fde0e973205d05d"}
+super = {git = "https://github.com/leanprover/super", rev = "ea69e23d395df3da3ac1fd28d4934db9dc866bea"}
