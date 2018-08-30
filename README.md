@@ -9,6 +9,7 @@
 - https://github.com/leanprover/lean
 - https://leanprover.github.io/
 - https://xenaproject.wordpress.com/
+- https://github.com/leanprover/mathlib
 
 ## L∃∀N Quick Reference
 
@@ -19,6 +20,7 @@
   - `#reduce`
   - `#eval`
   - `set_option <name> <value>`
+  - `#find` (mathlib)
 - Options
   - `pp.implicit`
   - `pp.universes`
@@ -130,3 +132,32 @@
     - `apply_opt_param`
     - `apply_auto_param`
     - `dedup`
+  - Mathlib
+    - `rcases`
+    - `rintros`
+    - `simpa`
+    - `replace`
+    - `finish`
+    - `clarify`
+    - `safe`
+    - `ring`
+    - `congr'`
+    - `unfold_coes`
+    - `resetI`
+    - `unfreezeI`
+    - `introI`
+    - `introsI`
+    - `haveI`
+    - `letI`
+    - `solve_by_elim` (with an argument like ``{ discharger := `[cc] }``)
+    - `ext1`
+    - `ext`
+    - `refine_struct`
+    - `apply_rules [id*] n?`
+    - `h_generalize`
+    - `pi_instance`
+    - `assoc_rewrite`
+    - `restate_axiom`
+    - `def_replacer id`
+    - `tidy`
+    - `conv`?
