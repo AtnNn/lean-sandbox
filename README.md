@@ -19,14 +19,41 @@
   - `#exit`
   - `#reduce`
   - `#eval`
-  - `set_option <name> <value>`
   - `#find` (mathlib)
+- Top-level
+  - `section`
+  - `import`
+  - `def`
+  - `protected def`?
+  - `instance`
+  - `class`
+  - `variables`
+  - `universes`
+  - `inductive`
+  - `structure`
+  - `record`
+  - `abbreviation`
+  - `axiom`
+  - `constant`
+  - `prelude`?
+  - `notation ... := expr`
+    - `expr`
+    - `` `op`:prec ``
+  - ``reserve fixity `op`:prec``
+  - ``prefix `op` := expr``
+  - `infix`
+  - `infixr`
+  - `attribute [attr] expr*`
+- Comments
+  - `--`
+  - `/-` `-/`
 - Options
   - `pp.implicit`
   - `pp.universes`
   - `pp.coercions`
   - `pp.notation`
   - `pp.beta`
+  - `trace.eqn_compiler.elim_match`
 - Attributes
   - Used by tactics
     - `[class]`
@@ -46,6 +73,11 @@
     - `[elab_with_expected_type]`
     - `[elab_simple]`
     - `[elab_as_eliminator]`
+  - Other
+    - `[unify]`: ?
+    - `[inline]`: ?
+    - `[pattern]`: ?
+    - `[subst]`: ?
 - Tactics
   - Basic
     - `intro id?`
