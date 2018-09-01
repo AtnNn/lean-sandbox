@@ -12,12 +12,11 @@ set_option pp.implicit true
 
 #print has_well_founded
 
-#print has_sizeof
-
 def range_list : Π (a b : ℕ) {h : a ≤ b}, list ℕ
 | _ _ (nat.less_than_or_equal.refl _) := []
-| a b (nat.less_than_or_equal.step c) := b :: @range_list (nat.succ a) b (by { sorry } )
-using_well_founded {rel_tac := λ f eqns, tactic.trace f >> tactic.trace eqns >> tactic.trace_state}
+| a b (nat.less_than_or_equal.step c) := b :: @range_list (nat.succ a) b (by { simp [*, succ_lt_succ],  } )
+
+--using_well_founded {rel_tac := λ f eqns, tactic.trace f >> tactic.trace eqns >> tactic.trace_state}
 
 def iota := range_list 0
 
