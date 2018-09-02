@@ -1,11 +1,12 @@
+import data.fintype
 import lib.sets
 import lib.lists
 
-universe u
-variables {α : Type u}
+#print set
 
-class finite (s : set α) := (xs : list α) (h : ∀ x, s x → x ∈ xs)
+example {α} {s : set α} (x : subtype s) : subtype s := x
 
+/-
 instance finite_all_unit : finite (λ (_ : unit), true)
 := finite.mk [()] (λ x _, by {cases x, simp})
 
@@ -41,3 +42,4 @@ instance finite_ub_nat {s : set ℕ} [decidable_pred s] [ub : has_ub s] : finite
 
 def set_sum {α : Type u} [has_add α] [has_zero α] (s : set α) [f : finite s] : α :=
   finite.cases_on f (λ l _, list.foldl (λ a b, a + b) 0 l)
+-/

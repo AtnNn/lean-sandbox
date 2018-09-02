@@ -1,6 +1,26 @@
-import lib.finite
 import lib.sets
-import lib.lists
+
+def split_and (
+
+class has_upper_bound {α} [has_le α] (s : set α) :=
+(ub : α) (h : ∀ x : α, s x → x ≤ ub)
+
+def tmp : has_upper_bound (λ x, x = 1) := ⟨1, by simp⟩
+
+meta def find_nat_ub_tac : tactic unit :=
+  `[exact tmp]
+
+instance find_nat_ub {s : set ℕ} (hub : has_upper_bound s . find_nat_ub_tac) : has_upper_bound s := hub
+
+def tmp2 : has_upper_bound (λ x, x = 1) := find_nat_ub
+
+#reduce tmp2.ub
+
+def foo [hub : has_upper_bound (λ x, x = 1)] : ℕ := hub.ub
+
+#eval foo
+
+instance fintype_bounded_nat {p : set ℕ} [has_upper_bound p] : fintype p := sorry
 
 def problem : ℕ :=
   set_sum { n | (3 ∣ n ∨ 5 ∣ n) ∧ n < 1000 }
