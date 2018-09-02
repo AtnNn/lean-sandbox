@@ -2,6 +2,7 @@
 
 - [logic_and_proof/](logic_and_proof/): working through exercises in https://leanprover.github.io/logic_and_proof/
 - [projecteuler/](projecteuler/): working through problems from https://projecteuler.net/
+- [docs/](docs/): collection of papers and presentations about lean
 
 ## Links
 
@@ -19,7 +20,9 @@
   - `#exit`
   - `#reduce`
   - `#eval`
-  - `#find` (mathlib)
+  - mathlib
+    - `#find`
+    - `#explode`
 - Top-level
   - `section`
   - `import`
@@ -53,7 +56,12 @@
   - `pp.coercions`
   - `pp.notation`
   - `pp.beta`
+  - `pp.all`
+  - `pp.full_names`
+  - `pp.unicode`
   - `trace.eqn_compiler.elim_match`
+  - `trace.class_instances`
+  - `max_memory`
 - Attributes
   - Used by tactics
     - `[class]`
@@ -192,4 +200,15 @@
     - `restate_axiom`
     - `def_replacer id`
     - `tidy`
+    - `chain`
+  - Other
     - `conv`?
+    - `tauto`?
+    - `rintro`?
+    - `dec_trivial`?
+    - `obviously`?
+    - `rewrite_search`?
+    - `sanity_check`?
+    - `slim_check`?
+    - `nunchaku`?
+    - `solve_by_elim`?
