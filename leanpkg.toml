@@ -9,4 +9,4 @@ lean-tidy = {git = "https://github.com/semorrison/lean-tidy", rev = "42582a23adc
 mini_crush = {git = "https://github.com/leanprover/mini_crush", rev = "03c955233c20accaaa2f8445dd910cf9ec2cac58"}
 qelim = {git = "https://github.com/skbaek/qelim", rev = "99e9ca205a1fc061343dfac02fde0e973205d05d"}
 super = {git = "https://github.com/leanprover/super", rev = "ea69e23d395df3da3ac1fd28d4934db9dc866bea"}
-slim_check = {git = "https://github.com/cipher1024/slim_check", rev="f6c44cc48bc44c108ce88c4b1d5cad7b3f63445d"}
+slim_check = {git = "https://github.com/cipher1024/slim_check", rev = "f6c44cc48bc44c108ce88c4b1d5cad7b3f63445d"}

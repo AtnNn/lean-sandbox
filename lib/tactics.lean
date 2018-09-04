@@ -1,3 +1,5 @@
+import tactic.ring
+import tactic.finish
 import tactic.interactive
 import tactic.find
 
