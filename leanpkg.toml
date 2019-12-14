@@ -1,12 +1,10 @@
 [package]
 name = "lean-sandbox"
 version = "0.1"
-lean_version = "3.4.1"
+lean_version = "3.4.2"
+path = "src"
 
 [dependencies]
-mathlib = {git = "https://github.com/leanprover/mathlib", rev = "905345a2ceaa5d0c7bc2f6310026961416b2cae4"}
-lean-tidy = {git = "https://github.com/semorrison/lean-tidy", rev = "42582a23adc92e5861b3b5850fdb77f3990366b0"}
-mini_crush = {git = "https://github.com/leanprover/mini_crush", rev = "03c955233c20accaaa2f8445dd910cf9ec2cac58"}
-qelim = {git = "https://github.com/skbaek/qelim", rev = "99e9ca205a1fc061343dfac02fde0e973205d05d"}
-super = {git = "https://github.com/leanprover/super", rev = "ea69e23d395df3da3ac1fd28d4934db9dc866bea"}
-slim_check = {git = "https://github.com/cipher1024/slim_check", rev = "f6c44cc48bc44c108ce88c4b1d5cad7b3f63445d"}
+mathlib = {git = "https://github.com/leanprover/mathlib", rev = "a3844c85c606acca5922408217d55891b760fad6"}
+mini_crush = {git = "https://github.com/leanprover/mini_crush", rev = "cea4166b1b2970fba47907798e7fe0511e426cfd"}
+super = {git = "https://github.com/leanprover/super", rev = "fe50a40c3e2aeda02aa07c64752b0acf1edd9af4"}

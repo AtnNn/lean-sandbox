@@ -41,6 +41,10 @@ lemma sum_to_eq_sum_iota {n} : sum_to n = list.sum (list.iota n) := begin
   { rw [sum_to_suc, ih, iota_succ, sum_cons] }
 end
 
+lemma filter_and {T} {p q : T → Prop} [decidable_pred p] [decidable_pred q] {xs : list T} : list.filter (λ x, (p x ∧ q x)) xs = list.filter p (list.filter q xs) := begin
+  sorry
+end
+
 lemma set_sum_of_sum_mult_below {d k : ℕ} : sum_mult_below d k = set_sum {n | d ∣ n ∧ n < k} := begin
   delta set_sum,
   delta sum_mult_below,
@@ -48,7 +52,10 @@ lemma set_sum_of_sum_mult_below {d k : ℕ} : sum_mult_below d k = set_sum {n | 
   rw [sum_to_eq_sum_iota],
   rw [sum_map_of_sum_mul],
   refine congr rfl _,
-  sorry
+  generalize h : (k - 1) / d = m,
+  induction m,
+  { simp, sorry },
+  { sorry }
 end
 
 theorem proof : problem = solution := begin

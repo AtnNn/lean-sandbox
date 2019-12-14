@@ -88,5 +88,9 @@ lemma mul_suc_even (n : ℕ) : 2 ∣ n * (n + 1) := begin
     simp only [dvd_mul 2 _, nat.mul_assoc] },
   { cases suc_odd_even _ h₁ with x h₁,
      rw [h₁],
-     simp only [dvd_mul 2 _, nat.mul_assoc] }
+     rw [←nat.mul_assoc _ _],
+     rw [nat.mul_comm n 2],
+     rw [nat.mul_assoc _ _],
+     exact dvd_mul 2 _
+  }
 end

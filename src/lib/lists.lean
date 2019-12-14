@@ -22,6 +22,9 @@ lemma sum_cons (x : ℕ) (xs : list ℕ) : list.sum (x :: xs) = x + sum xs := be
   exact nat.add_assoc
 end
 
+@[simp]
+lemma iota_nil : list.iota 0 = [] := by trivial
+
 lemma sum_map_of_sum_mul {xs} {d : ℕ} : list.sum xs * d = list.sum (list.map (λ n, n * d) xs) := begin
   induction xs with x xs ih,
   { simp },
