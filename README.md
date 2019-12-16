@@ -15,11 +15,11 @@
 ## L∃∀N Quick Reference
 
 - Commands
-  - `#check`
-  - `#print`
+  - `#check <expr>` -- Type of expr
+  - `#print <expr>` -- Value of expr
   - `#exit`
-  - `#reduce`
-  - `#eval`
+  - `#reduce <expr>` -- Eval expr using slow and safe reduction
+  - `#eval` -- Using fast corner-cutting
   - mathlib
     - `#find`
     - `#explode`
@@ -61,6 +61,8 @@
   - `pp.unicode`
   - `trace.eqn_compiler.elim_match`
   - `trace.class_instances`
+  - `trace.simplfy`
+  - `trace.simplify.rewrite`
   - `max_memory`
 - Attributes
   - Used by tactics
