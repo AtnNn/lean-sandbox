@@ -59,6 +59,7 @@
   - `pp.all`
   - `pp.full_names`
   - `pp.unicode`
+  - `pp.numerals`
   - `trace.eqn_compiler.elim_match`
   - `trace.class_instances`
   - `trace.simplfy`
