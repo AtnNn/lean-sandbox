@@ -1,8 +1,10 @@
 # L∃∀N Sandbox
 
-- [logic_and_proof/](logic_and_proof/): working through exercises in https://leanprover.github.io/logic_and_proof/
-- [projecteuler/](projecteuler/): working through problems from https://projecteuler.net/
-- [docs/](docs/): collection of papers and presentations about lean
+- [logic_and_proof](src/logic_and_proof/): working through exercises in https://leanprover.github.io/logic_and_proof/
+- [projecteuler](src/projecteuler/): working through problems from https://projecteuler.net/
+- [advent_of_code_2019](src/advent_of_code_2019/): https://adventofcode.com/2019
+- [xena_challenge](src/xena_challenge/): https://github.com/kbuzzard/xena/blob/master/Maths_Challenges/challenges.md
+- [docs](src/docs/): collection of papers and presentations about lean
 
 ## Links
 
