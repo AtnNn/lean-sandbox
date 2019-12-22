@@ -4,6 +4,7 @@
 - [projecteuler](src/projecteuler/): working through problems from https://projecteuler.net/
 - [advent_of_code_2019](src/advent_of_code_2019/): https://adventofcode.com/2019
 - [xena_challenge](src/xena_challenge/): https://github.com/kbuzzard/xena/blob/master/Maths_Challenges/challenges.md
+- [100_theorems](src/100_theorems/]: http://www.cs.ru.nl/~freek/100/
 - [docs](src/docs/): collection of papers and presentations about lean
 
 ## Links
