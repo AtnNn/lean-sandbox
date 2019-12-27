@@ -5,7 +5,8 @@
 - [advent_of_code_2019](src/advent_of_code_2019/): https://adventofcode.com/2019
 - [xena_challenge](src/xena_challenge/): https://github.com/kbuzzard/xena/blob/master/Maths_Challenges/challenges.md
 - [100_theorems](src/100_theorems/]: http://www.cs.ru.nl/~freek/100/
-- [docs](src/docs/): collection of papers and presentations about lean
+- [knopp](src/knopp/): https://archive.org/stream/theoryandapplica031692mbp/
+- [docs](src/docs/): old collection of papers and presentations about lean
 
 ## Links
 
@@ -67,6 +68,7 @@
   - `trace.class_instances`
   - `trace.simplfy`
   - `trace.simplify.rewrite`
+  - `trace.app_builder`
   - `max_memory`
 - Attributes
   - Used by tactics

@@ -1,114 +1,12 @@
+import knopp.common
+
+-- ordered sequence of natural numbers 1, 2, 3, ...
+import knopp.natural
+
+-- 1. The system of rational numbers and its gaps
+import knopp.rational
+
 /-
-
-Chapter I.
-Principles of the theory of real numbers.
-
-1. The system of rational numbers and its gaps.
-
-What do we mean by saying that a particular number is "known"
-or "given" or may be "calculated"? What does one mean by saying
-that he knows the value of 1/2 or n>> or lnat ne can calculate 1/5?
-A question like this is easier to ask than to answer. Were I to say
-that \/2 = l-414, I should obviously be wrong, since, on multi-
-plying out, 1-414 X 1-414 does not give 2. If I assert, with greater
-caution, that 1/2 = 1-4 142 135 and so on, even that is no tenable
-answer, and indeed in the first instance it is entirely meaningless. The
-question is, after all, how we are to go on, and this, without further
-indication, we cannot tell. Nor is the position improved by carrying
-the decimal further, even to hundreds of places. In this sense it
-may well be said that no one has ever beheld the whole of "V/2,
-not held it completely in his own hands, so to speak whilst a
-statement that 1/9 = 3 or that 35-7-7 = 5 has a finished and thorough-
-ly satisfactory appearance. The position is no better as regards
-the number n, or a logarithm or sine or cosine from the tables.
-Yet we feel certain that 1/2 and n and log 5 really do have quite definite
-values, and even that we actually know these values. But a clear
-notion of what these impressions exactly amount to or imply we do
-not as yet possess. Let us endeavour to form such an idea.
-
-Having raised doubts as to the justification for such statements
-as "I know 1/2", we must, to be consistent, proceed to examine
-how far one is justified even in asserting that he knows the number
-^ or is given (for some specific calculation) the number ~. Nay
-more, the significance of such statements as "I know the number 97"
-or "for such and such a calculation I am given a = 2 and 6 = 5" would
-
-
-
-4 Chapter I. Principles of the theory of real numbers.
-
-require scrutiny. We should have to enquire into the whole significance
-or concept of the natural numbers 1, 2, 3, ...
-
-This last question, however, strikes us at once as distinctly trans-
-gressing the bounds of Mathematics and as belonging to an order of
-ideas quite apart from that which we propose to develop here.
-
-No science rests entirely within itself: each borrows the strength
-of its ultimate foundations from strata above or below it, such as experi-
-ence, or theory of knowledge, or logic, or metaphysics, . . . Every science
-must accept something as simply given, and on that it may proceed to
-build. In this sense neither mathematics nor any other science starts
-without assumptions. The only question which has to be settled by
-a criticism of the foundation and logical structure of any science is what
-shall be assumed as in this sense "given"; or better, what minimum of
-initial assumptions will suffice, to serve as a basis for the subsequent
-development of all the rest.
-
-For the problem we are dealing with, that of constructing the system
-of real numbers, these preliminary investigations are tedious and trouble-
-some, and have actually, it must be confessed, not yet reached any entirely
-satisfactory conclusion at all. A discussion adequate to the present
-position of the subject would consequently take us far beyond the limits
-of the work w r e are contemplating. Instead, therefore, of shouldering
-an obligation to assume as basis only a minimum of hypotheses, we
-propose to regard at once as known (or "given", or "secured") a group
-of data whose deducibility from a smaller body of assumptions is familiar
-to everyone namely, the system of rational numbers, i. e. of numbers
-integral and fractional, positive and negative, including zero. Speaking
-broadly, it is a matter of common knowledge how this system may be
-constructed, if as a smaller body of assumptions only the ordered
-sequence of natural numbers 1, 2, 3, . . . , and their combinations by
-addition and multiplication, are regarded as "given". For everyone knows
-and we merely indicate it in passing how fractional numbers arise
-from the need of inverting the process of multiplication, negative
-numbers and zero from that of inverting the process of addition 1 .
-
-The totality, or aggregate, of numbers thus obtained is called the
-system (or set) of rational numbers. Each of these can be completely and
-literally "given" or "written down" or "made known" with the help of at
-most two natural numbers, a dividing bar and possibly a minus sign.
-For brevity, we represent them by small italic characters; #,&,...,
-x, y, . . . The following are the essential properties of this system:
-
-1 See the works of Loewy, Pringsheim, and Landau mentioned in the Intro-
-duction; also O. Holder, Die Anthmetik in strenger Begrundung, 2" J edition, Berlin
-1929; and O. Stolz and J. A. Gmeiner, Theoretische Arithmetik, 3 r<l edition, Leipzig
-1911.
-
-
-
-1. The system of rational numbers and its gaps. 5
-
-1. Rational numbers form an ordered aggregate; meaning that
-between any two, say a and 6, one and only one of the three relations
-
-a < b. a = b, a > b
-
-necessarily holds 2 ; and these relations of "order" between rational
-numbers are subject to a set of quite simple laws, which we assume known,
-the only essential ones for our purposes being the
-
-Fundamental Laws of Order.
-
-1. Invariably 3 a a.
-
-2. a b always implies b - a.
-
-3. a = b y b c implies a = c.
-
-4. a ^ b y b < c, or a < b, b < c y implies 4 a < c.
-
 2. Any two rational numbers may be combined in four distinct
 ways, referred to respectively as the four processes (or basic operations)
 of Addition, Subtraction, Multiplication, and Division. These operations
@@ -427,7 +325,7 @@ need not imply identity. Thus, for example, within the system of symbols of the
 form p/q, where/), q are integers and q =4= 0, the symbols 3/4, 0/8, I)/ 12 are
 generally said to be "equal"; that is, for certain purposes (calculating, measuring,
 and so on) we define equality within our system of symbols in such a way that 3/4 -=
-6/8-= -9/-12, although 3/4, 0/8, -9/-12 are in the first instance different
+6/8-= -9-12, although 3/4, 0/8, -9-12 are in the first instance different
 elements of that system (see also 14, note 1).
 
 
