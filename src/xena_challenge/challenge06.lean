@@ -14,4 +14,10 @@ attempt begin
   rw h at r,
   exact r
 end $
-λ h, (congr_fun h x).mp $ hR.1 x
+attempt (λ h, (congr_fun h x).mp $ hR.1 x) $
+attempt begin
+  apply nonempty.ne_empty,
+  use x,
+  exact hR.1 x
+end $
+nonempty.ne_empty ⟨x, hR.1 x⟩
