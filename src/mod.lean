@@ -47,15 +47,16 @@ begin
   sorry
 end
 
-def mod.induction {P : nat → nat → Sort u}
-: (∀ a b, a < b → P a b)
-→ (∀ a b, a ≥ b → P (a - b) b → P a b)
-→ ∀ a b, P a b
+def mod.induction (a k) (P : nat → Sort u)
+: (∀ a, a < k → P a)
+→ (∀ a, a ≥ k → P (a - k) → P a)
+→ P a
 := begin
+  have h : ∃ n, n * k + a % k = a,
   
 end
 
-#check well_founded.induction
+#check nat.rec
 
 end sandbox
 
