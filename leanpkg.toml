@@ -6,5 +6,3 @@ path = "src"
 
 [dependencies]
 mathlib = {git = "https://github.com/leanprover-community/mathlib", rev = "a3844c85c606acca5922408217d55891b760fad6"}
-flypitch = {git = "https://github.com/flypitch/flypitch", rev = "781c5303a5520809d55374cd337b009deab551c2"}
-Sylow = {git = "https://github.com/ChrisHughes24/Sylow", rev = "7185e33eeb6d28ea1a423492e7b4a8634aa9723d"}
