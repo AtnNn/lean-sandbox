@@ -3,7 +3,7 @@ import tactic.rcases
 import tactic.tidy
 import data.nat.basic
 
-universe u
+universes u v
 
 namespace knopp
 
@@ -419,11 +419,23 @@ mod (a.sub b) b else a
 
 #check well_founded
 
+--#print mod._main._pack
+
+#check psigma.rec
+
+set_option trace.class_instances true
+
+example {p : nat → nat → Prop} : psigma.rec (λ a b, p a b) (psigma.mk nat.zero (Π (x : nat.{u}), nat.zero.{v})) := _
+
+/-
 lemma mod_lt_succ {a b} : mod a b < succ b :=
 begin
-  apply well_founded.rec_on,
+  delta mod mod._main mod._main._pack,
+  rw well_founded.fix_eq,
+  delta psigma.cases_on,
   
 end
+-/
 
 instance has_one : has_one natural := ⟨one⟩
 
