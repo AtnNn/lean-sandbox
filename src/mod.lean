@@ -37,26 +37,35 @@ begin
     exact not_le.mpr h }
 end
 
-lemma mod_lt {a b} : mod a b < b :=
+lemma zero_mod {b} : 0 % b = 0 :=
 begin
-  sorry
+  cases b,
+  { exact mod_zero },
+  { apply mod_eq_of_lt,
+    apply nat.zero_lt_succ }
+end
+
+lemma mod_lt {a b} (h : b ≠ 0) : mod a b < b :=
+begin
+  cases b,
+  { exfalso, exact h rfl },
+  { induction a using nat.case_strong_induction_on with x ih,
+    { rw zero_mod,
+      apply nat.zero_lt_succ },
+    { apply nat.lt_ge_by_cases,
+      { intro h, rw mod_eq_of_lt h, exact h },
+      { intro h,
+        rw mod_step h,
+        apply ih,
+        replace h := le_of_succ_le_succ h,
+        rw nat.succ_sub_succ,
+        exact sub_le _ _ } } }
 end
 
 lemma mod_prop {a b} : ∃ k, mod a b * k = a :=
 begin
   sorry
 end
-
-def mod.induction (a k) (P : nat → Sort u)
-: (∀ a, a < k → P a)
-→ (∀ a, a ≥ k → P (a - k) → P a)
-→ P a
-:= begin
-  have h : ∃ n, n * k + a % k = a,
-  
-end
-
-#check nat.rec
 
 end sandbox
 
