@@ -348,12 +348,13 @@ begin
     revert h,
     rw succ_eq_add_one,
     intro h,
-    }
+    rw ih (lt_pred_of_succ_lt h),
+    congr }
 end
 
 lemma sub_add_eq {a b : natural} {h} : a.sub b + b = a :=
 begin
-  induction b with b ih,
+  induction b using knopp.natural.induction with b ih,
   { cases a,
     { exfalso, cases h, apply not_add_eq_self, assumption },
     { unfold sub sub.impl, refl } },
@@ -382,7 +383,7 @@ begin
   rw succ_pred_eq_self
 end
 
-lemma sizeof_succ_eq_succ_sizeof {a : natural} : sizeof (a + 1) = 1 + (sizeof a) :=
+lemma sizeof_succ_eq_succ_sizeof {a : natural} : sizeof (succ a) = 1 + (sizeof a) :=
 begin
   unfold sizeof has_sizeof.sizeof natural.sizeof
 end
@@ -409,7 +410,7 @@ begin
     exact not_lt_one h },
   { rw sizeof_succ_eq_succ_sizeof,
     cases a,
-    { rw (by { unfold sizeof has_sizeof.sizeof natural.sizeof } : sizeof 1 = 1),
+    { rw (by { unfold sizeof has_sizeof.sizeof natural.sizeof } : sizeof one = 1),
       apply nat.lt_add_of_pos_right,
       exact pos_sizeof },
     { rw sizeof_succ_eq_succ_sizeof,
@@ -471,18 +472,35 @@ begin
   rw dif_pos h
 end
 
-lemma strong_induction {p : natural → Sort u} (n : natural) (hb : p 1) (hi : ∀ n m, n < m → p n → p m) : p n :=
+lemma le_of_lt_succ {a b : natural} (h : a < b + 1) : a ≤ b :=
 begin
-  suffices h : ∀ x y, x < y → p x,
-  { apply h n (n + 1), use 1, refl },
-  { intro x, induction x with x ih,
-    { intros y h, assumption },
-    { intros y h,
-      apply hi x,
-      { use 1, refl },
-      { apply ih y,
-        apply lt_of_succ_lt,
-        assumption } } }
+  cases h with c h,
+  cases c with c,
+  { left, exact add_inj_right h },
+  { right,
+    use c,
+    rw [succ_eq_add_one, ←add_assoc] at h,
+    exact add_inj_right h }
+end
+
+instance decidable_eq : decidable_eq natural
+| 1 1 := decidable.is_true rfl
+| (n + 1) (m + 1) := match decidable_eq n m with
+  | decidable.is_true h := decidable.is_true (congr_arg (λ x, add x 1) h)
+  | decidable.is_false h := decidable.is_false (h ∘ add_inj_right)
+end
+| 1 (m + 1) := decidable.is_false (succ_ne_one ∘ eq.symm)
+| (n + 1) 1 := decidable.is_false succ_ne_one
+
+lemma strong_induction {p : natural → Sort u} (n : natural) (h : ∀ n, (∀ m, m < n → p m) → p n) : p n :=
+begin
+  suffices hh : ∀ n m, m < n → p m, { apply h, apply hh },
+  intros n, induction n using knopp.natural.induction with n ih,
+  { intros m hh, exfalso, apply not_lt_one, exact hh },
+  { intros m hh,
+    apply or.by_cases (le_of_lt_succ hh),
+    { intros, subst m, apply h, apply ih },
+    { intros, apply ih, assumption } }
 end
 
 lemma le_self {a : natural} : a ≤ a := or.inl rfl
@@ -502,13 +520,32 @@ end
 
 lemma cases {p : natural → Sort u} (a : natural) : p 1 → (∀ n, p n → p (n + 1)) → p a := natural.rec_on a
 
+lemma le_or_gt (a b : natural) : a ≤ b ∨ a > b :=
+if h₁ : b < a then or.inr h₁ else
+if h₂ : a = b then or.inl (or.inl h₂) else
+if h₃ : a < b then or.inl (or.inr h₃) else begin
+  exfalso,
+  induction a using knopp.natural.induction with a ih,
+  { cases b, exact h₂ rfl, exact h₃ one_lt_succ },
+  { apply ih; intro h,
+    { apply h₁, cases h with c h, use c + 1, rw ←add_assoc, congr, assumption },
+    { subst a, apply h₁, constructor, refl },
+    { cases h with c h, subst b, cases c,
+      { apply h₂, refl },
+      { apply h₃, constructor,
+        rw succ_eq_add_one,
+        rw @add_comm c,
+        rw add_assoc } } }
+end
+
+instance decidable_le {a b : natural} : decidable (a ≤ b) :=
+
+
 lemma mod_le_self {a b : natural} : a % b ≤ b :=
 begin
-  induction a using knopp.natural.strong_induction with x y  h1 h2,
-  { apply cases b,
-    { rw mod_of_eq, exact le_self },
-    { intros b h, rw one_mod, right, use b, rw add_comm }},
-  {  }
+  induction a using knopp.natural.strong_induction with a ih,
+  apply dite (a ≤ b),
+  
 end
 
 inductive order (a b : natural) : Prop
