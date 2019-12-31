@@ -538,14 +538,27 @@ if h₃ : a < b then or.inl (or.inr h₃) else begin
         rw add_assoc } } }
 end
 
-instance decidable_le {a b : natural} : decidable (a ≤ b) :=
+lemma cases_le_or_gt {p : Prop} (a b : natural) (h₁ : a ≤ b → p) (h₂ : a > b → p) : p :=
+begin
+  have h := le_or_gt a b,
+  cases h; cc
+end
 
+instance decidable_le {a b : natural} : decidable (a ≤ b) :=
+if h₁ : a < b then decidable.is_true (or.inr h₁) else
+if h₂ : a = b then decidable.is_true (or.inl h₂) else
+decidable.is_false begin
+  intro h, cases h, exact h₂ h, exact h₁ h
+end
 
 lemma mod_le_self {a b : natural} : a % b ≤ b :=
 begin
   induction a using knopp.natural.strong_induction with a ih,
-  apply dite (a ≤ b),
-  
+  apply cases_le_or_gt a b; intro h,
+  { rw mod_of_le; assumption },
+  { rw mod_step,
+    { apply ih, constructor, apply sub_add_eq },
+    { assumption }}
 end
 
 inductive order (a b : natural) : Prop
@@ -562,15 +575,9 @@ instance eq.decidable : Π {a b : natural}, decidable (a = b)
   | is_false h := by { apply is_false, intro hh, exact h (succ.inj hh) }
 end
 
-def gcd.impl.size : (Σ' (a b : natural), decidable (a = b)) → ℕ
-| ⟨a, b, c⟩ := sizeof a + sizeof b + match c with
-  | is_true _ := 0
-  | is_false _ := 1
-end
-
 lemma lt_of_add_lt_add {a b c : natural} (h : a + b < a + c) : b < c :=
 begin
-  induction a with a ih,
+  induction a using knopp.natural.induction with a ih,
   { repeat { rw one_add_eq_succ at h },
     exact lt_of_succ_lt_succ h },
   { repeat { rw succ_add at h },
@@ -581,30 +588,52 @@ def dvd (a b : natural) : Prop := ∃ c, a = b * c
 
 instance has_dvd : has_dvd natural := ⟨dvd⟩
 
-/-
-lemma gcd.impl_wf (a b) (hl : decidable (mod b a = a)) (hr : a ≠ b) : gcd.impl.size ⟨mod b a, a, hl⟩ < gcd.impl.size ⟨a, b, is_false hr⟩ :=
+lemma gcd_wf (n m : natural) (hx : m % n ≠ n) : sizeof (m % n) < sizeof n :=
 begin
-  unfold gcd.impl.size,
-  rw nat.add_comm _ (sizeof a),
-  rw nat.add_assoc,
-  rw nat.add_assoc,
-  rw add_lt_add_iff_left _,
-  tactic.unfreeze_local_instances,
-  cases hl; unfold gcd.impl.size._match_1,
-  { rw add_lt_add_iff_right _,
-    apply lt_sizeof_of_lt,
-    have h := mod_lt_succ,
-     },
-  {  }
+  apply lt_sizeof_of_lt,
+  cases @mod_le_self m n,
+  { constructor,
+    exfalso,
+    exact hx h,
+    exact 1 },
+  { assumption }
 end
 
-def gcd.impl : Π (a b : natural), (decidable (a = b)) → natural
-| a _ (decidable.is_true _) := a
-| a b (decidable.is_false h) :=
-have hh : _ := (gcd.impl_wf a b (by apply_instance) h),
-gcd.impl (mod b a) a (by apply_instance)
-using_well_founded {rel_tac := λ _ _, `[exact ⟨_, measure_wf gcd.impl.size⟩]}
--/
+def gcd : natural → natural → natural
+| n m := let x := m % n in if h: x = n then x else
+have hh : _ := gcd_wf n m h,
+gcd x n
+
+lemma gcd_def' {a b : natural} : gcd a b = if b % a = a then b % a else gcd (b % a) a :=
+begin
+  conv { to_lhs, rw gcd.equations._eqn_1 }
+end
+
+lemma gcd_same {a : natural} : gcd a a = a :=
+begin
+  rw gcd_def',
+  rw if_pos mod_of_eq,
+  exact mod_of_eq
+end
+
+lemma gcd_def {a b : natural} : gcd a b = if a = b then a else gcd (b % a) a :=
+begin
+  by_cases a = b,
+  { rw if_pos h, rw h, exact gcd_same },
+  { rw if_neg h,
+    conv in (gcd a b) { rw gcd_def' },
+    by_cases hh : b % a = a,
+    { rw if_pos hh, rw hh, rw gcd_same },
+    { rw if_neg hh } }
+end
+
+lemma gcd_step {a b : natural} : gcd a b = gcd (b % a) a :=
+begin
+  conv in (gcd a b) { rw gcd_def },
+  by_cases h: a = b,
+  { rw if_pos h, rw h, rw mod_of_eq, rw gcd_same },
+  { rw if_neg h }
+end
 
 end natural
 
