@@ -1,36 +1,14 @@
+import knopp.natural.def
+import data.nat.basic
 import tactic.interactive
 import tactic.rcases
 import tactic.tidy
 import tactic.wlog
-import data.nat.basic
 
 universes u v
 
 namespace knopp
-
-inductive natural | one : natural | succ : natural → natural
-
 namespace natural
-
-instance has_one : has_one natural := ⟨one⟩
-
-def add : natural → natural → natural
-| n 1 := succ n
-| n (succ m) := succ (add n m)
-
-instance has_add : has_add natural := ⟨add⟩
-
-def mul : natural → natural → natural
-| n 1 := n
-| n (m + 1) := n + mul n m
-
-instance has_mul : has_mul natural := ⟨mul⟩
-
-def induction {p : natural → Sort u} {a : natural} : p 1 → (∀ x, p x → p (x + 1)) → p a := natural.rec_on a
-
-def lt (a b : natural) : Prop := ∃ x, a + x = b
-
-instance has_lt : has_lt natural := ⟨lt⟩
 
 lemma add_succ {a b : natural} : a + (b + 1) = (a + b) + 1 := rfl
 
@@ -45,6 +23,7 @@ lemma add_one_eq_succ {a : natural} : a + 1 = succ a := rfl
 
 lemma mul_succ {a b : natural} : a * (b + 1) = a + a * b := rfl
 
+@[simp]
 lemma succ_eq_add_one {a} : succ a = a + 1 := eq_comm.1 add_one_eq_succ
 
 lemma succ_add {a b : natural} : (a + 1) + b = (a + b) + 1 :=
@@ -65,6 +44,7 @@ begin
     rw succ_add }
 end
 
+@[simp]
 lemma one_mul {a : natural} : 1 * a = a :=
 begin
   induction a using knopp.natural.induction with b ih,
@@ -72,6 +52,7 @@ begin
   { rw mul_succ, rw ih, exact add_comm }
 end
 
+@[simp]
 lemma mul_one {a : natural} : a * 1 = a := rfl
 
 lemma add_assoc {a b c : natural} : a + b + c = a + (b + c) :=
@@ -174,6 +155,7 @@ lemma add_inj_right {a b c : natural} (h : a + c = b + c) : a = b := begin
   exact add_inj_left h
 end
 
+@[simp]
 lemma one_eq_1 : one = 1 := rfl
 
 lemma mul_inj {a b c : natural} (h : a * c = b * c) : a = b :=
@@ -220,13 +202,7 @@ begin
   { rw [succ_eq_add_one, add_succ] at h, exact succ_ne_one h }
 end
 
-meta def autoparam : tactic unit := tactic.tidy
-
-def pred.total : natural → natural
-| 1 := 1
-| (x + 1) := x
-
-def pred (a : natural) (h : 1 < a . autoparam) : natural := pred.total a
+@[simp]
 lemma succ_pred_eq_self {a : natural} {h} : (pred a) + 1 = a :=
 begin
   cases a,
@@ -254,6 +230,7 @@ begin
   { exact one_lt_succ }
 end
 
+@[simp]
 lemma pred_succ {a : natural} {h : 1 < a + 1} : pred (a + 1) h = a := rfl
 
 set_option trace.check true
@@ -278,14 +255,7 @@ begin
   assumption
 end
 
-def sub.total : Π (a b : natural), natural
-| a 1 := pred.total a
-| a (b + 1) :=
-sub.total (pred.total a) b
-
-def sub (a b : natural) (h : b < a . autoparam) : natural := sub.total a b
-
-def lt_of_succ_lt {a b : natural} (h : a + 1 < b) : a < b :=
+lemma lt_of_succ_lt {a b : natural} (h : a + 1 < b) : a < b :=
 begin
   cases h with c h,
   use c + 1,
@@ -337,6 +307,7 @@ begin
     congr }
 end
 
+@[simp]
 lemma sub_add_eq {a b : natural} {h} : a.sub b + b = a :=
 begin
   induction b using knopp.natural.induction with b ih,
@@ -402,33 +373,12 @@ begin
       simp [h] } }
 end
 
-def mod : natural → natural → natural
-| a b := if h : b < a then
-have natural.sizeof (sub a b h) < natural.sizeof a :=
-  lt_sizeof_of_lt (sub_lt_of_lt h),
-mod (a.sub b) b else a
-
-instance has_mod : has_mod natural := ⟨mod⟩
-
-def mod_def {a b : natural} : a % b = if h : b < a then (sub a b) % b else a := mod.equations._eqn_1 a b
-
 lemma not_lt_of_eq {a : natural} : ¬ a < a :=
 begin
   intro h,
   cases h with x h,
   apply add_ne_self h
 end
-
-lemma mod_of_eq {a : natural} : a % a = a :=
-begin
-  rw mod_def,
-  apply dif_neg,
-  exact not_lt_of_eq
-end
-
-def le (a b : natural) := a = b ∨ a < b
-
-instance has_le : has_le natural := ⟨le⟩
 
 lemma not_lt_and_lt_symm {a b : natural} : ¬ (a < b ∧ b < a) :=
 begin
@@ -438,22 +388,6 @@ begin
   cases hr with y hy,
   rw [←hy, add_assoc] at hx,
   exact add_ne_self hx
-end
-
-lemma mod_of_le {a b : natural} (h : a ≤ b) : a % b = a :=
-begin
-  cases h,
-  { rw h, exact mod_of_eq },
-  { rw mod_def,
-    rw dif_neg,
-    intro hh,
-    exact not_lt_and_lt_symm ⟨h, hh⟩ }
-end
-
-lemma mod_step {a b : natural} (h : a > b) : a % b = (sub a b) % b :=
-begin
-  rw mod_def,
-  rw dif_pos h
 end
 
 lemma le_of_lt_succ {a b : natural} (h : a < b + 1) : a ≤ b :=
@@ -497,14 +431,6 @@ begin
   { right, use a, exact one_add_eq_succ }
 end
 
-lemma one_mod {a : natural} : 1 % a = 1 :=
-begin
-  apply mod_of_le,
-  exact one_le
-end
-
-lemma cases {p : natural → Sort u} (a : natural) : p 1 → (∀ n, p n → p (n + 1)) → p a := natural.rec_on a
-
 lemma le_or_gt (a b : natural) : a ≤ b ∨ a > b :=
 if h₁ : b < a then or.inr h₁ else
 if h₂ : a = b then or.inl (or.inl h₂) else
@@ -536,16 +462,6 @@ decidable.is_false begin
   intro h, cases h, exact h₂ h, exact h₁ h
 end
 
-lemma mod_le_right {a b : natural} : a % b ≤ b :=
-begin
-  induction a using knopp.natural.strong_induction with a ih,
-  apply cases_le_or_gt a b; intro h,
-  { rw mod_of_le; assumption },
-  { rw mod_step,
-    { apply ih, constructor, apply sub_add_eq },
-    { assumption }}
-end
-
 lemma succ_sub_succ {a b : natural} {h} : sub (a + 1) (b + 1) = sub a b (lt_of_succ_lt_succ h) :=
 begin
   unfold sub,
@@ -553,6 +469,7 @@ begin
   rw pred.total.equations._eqn_2
 end
 
+@[simp]
 lemma add_sub_eq {a b : natural} {h} : sub (a + b) b h = a :=
 begin
   induction b using knopp.natural.induction with b ih,
@@ -560,31 +477,6 @@ begin
   { conv in (a + (b + 1)) { rw ← add_assoc },
     rwa succ_sub_succ, exact ih }
 end
-
-lemma mod_le_left {n m : natural} : n % m ≤ n :=
-begin
-  suffices h : ∀ x, x ≤ n → (x % m) ≤ n,
-  { apply h, exact or.inl rfl, },
-  { intros x h,
-    induction x using knopp.natural.strong_induction with x ih,
-    rw mod_def, by_cases hh: m < x,
-    { rw dif_pos, tactic.swap,
-      { assumption, },
-      { apply ih,
-        { use m, rw sub_add_eq, },
-        { cases h with y,
-          { subst x, right, apply sub_lt_of_lt, },
-          { cases h with y h, right, use m + y,
-            rw ← add_assoc, rw sub_add_eq, assumption, }, }, }, },
-    { rw dif_neg,
-      { assumption, },
-      { assumption, }, }, },
-end
-
-inductive order (a b : natural) : Prop
-| lt : a < b → order
-| eq : a = b → order
-| gt : b > a → order
 
 instance eq.decidable : Π {a b : natural}, decidable (a = b)
 | 1 1 := is_true rfl
@@ -604,57 +496,6 @@ begin
     exact ih (lt_of_succ_lt_succ h) }
 end
 
-def dvd (a b : natural) : Prop := ∃ c, a = b * c
-
-instance has_dvd : has_dvd natural := ⟨dvd⟩
-
-lemma gcd_wf (n m : natural) (hx : m % n ≠ n) : sizeof (m % n) < sizeof n :=
-begin
-  apply lt_sizeof_of_lt,
-  cases @mod_le_right m n,
-  { constructor,
-    exfalso,
-    exact hx h,
-    exact 1 },
-  { assumption }
-end
-
-def gcd : natural → natural → natural
-| n m := let x := m % n in if h: x = n then x else
-have hh : _ := gcd_wf n m h,
-gcd x n
-
-lemma gcd_def' {a b : natural} : gcd a b = if b % a = a then b % a else gcd (b % a) a :=
-begin
-  conv { to_lhs, rw gcd.equations._eqn_1 }
-end
-
-lemma gcd_same {a : natural} : gcd a a = a :=
-begin
-  rw gcd_def',
-  rw if_pos mod_of_eq,
-  exact mod_of_eq
-end
-
-lemma  gcd_def {a b : natural} : gcd a b = if a = b then a else gcd (b % a) a :=
-begin
-  by_cases a = b,
-  { rw if_pos h, rw h, exact gcd_same },
-  { rw if_neg h,
-    conv in (gcd a b) { rw gcd_def' },
-    by_cases hh : b % a = a,
-    { rw if_pos hh, rw hh, rw gcd_same },
-    { rw if_neg hh } }
-end
-
-lemma gcd_step {a b : natural} : gcd a b = gcd (b % a) a :=
-begin
-  conv in (gcd a b) { rw gcd_def },
-  by_cases h: a = b,
-  { rw if_pos h, rw h, rw mod_of_eq, rw gcd_same },
-  { rw if_neg h }
-end
-
 lemma le_or_le_symm {x y : natural} : x ≤ y ∨ y ≤ x :=
 begin
   have hh := le_or_gt x y, cases hh,
@@ -666,26 +507,6 @@ lemma sub_lt_self {a b : natural} {h} : sub a b < a :=
 begin
   constructor,
   exact sub_add_eq
-end
-
-lemma gcd_symm {x y : natural} : gcd x y = gcd y x :=
-begin
-  wlog h : y ≤ x, { exact le_or_le_symm },
-  rw gcd_def,
-  cases h,
-  { rw if_pos h.symm, subst y, rw gcd_same },
-  { rw if_neg,
-    rw mod_of_le,
-    exact or.inr h,
-    intro hh,
-    cases h with x h,
-    subst y,
-    exact add_ne_self h }
-end
-
-lemma div_wf {a b : natural} (h : b + 1 < a) : natural.sizeof (sub a (b + 1) h) < natural.sizeof a := begin
-  apply lt_sizeof_of_lt,
-  exact sub_lt_self
 end
 
 lemma le_irrefl {a : natural} (h : a < a) : false :=
@@ -707,46 +528,91 @@ begin
     use x }
 end
 
-def div.impl : Π (a b : natural), (a ∣ b) → natural
-| a 1 _ := a
-| a (b + 1) hd := if h : b + 1 < a then
-have hh : _ := div_wf h,
-div.impl (sub a (b + 1) h) (b + 1) (sub_dvd_of_dvd hd) else 1
-
-def div (a b : natural) (h : a ∣ b . autoparam) := div.impl a b h
-
-lemma mod_one {a : natural} : a % 1 = 1 :=
+lemma dvd.rfl {a : natural} : a ∣ a :=
 begin
-  have h := @mod_le_right a 1,
+  unfold has_dvd.dvd dvd, use 1, simp
+end
+
+lemma le_of_succ_le_succ {a b :natural} (h : a + 1 ≤ b + 1) : a ≤ b :=
+begin
   cases h,
-  { assumption },
-  { exfalso, exact not_lt_one h }
+  { left, exact add_inj_right h },
+  { right, cases h with x h, use x,
+    rw [add_assoc, @add_comm 1, ← add_assoc] at h,
+    exact add_inj_right h }
 end
 
-lemma gcd_one {a : natural} : gcd a 1 = 1 :=
+lemma ne_succ {a : natural} : a ≠ a + 1 :=
 begin
-  rw [gcd_symm, gcd_step, mod_one, gcd_same]
+  induction a using knopp.natural.induction with a ih,
+  { intro h, cases h },
+  { intro h, exact ih (add_inj_right h) }
 end
 
-lemma le_of_mod_eq {a b : natural} (h : a % b = a) : a ≤ b :=
+lemma one_ne_succ {a : natural} (h : 1 = a + 1) : false :=
 begin
-  rw mod_def at h,
-  split_ifs at h,
-  sorry
+  exact natural.no_confusion h
 end
 
-@[simp]
-lemma gcd_dvd_left {a b : natural} : a ∣ gcd a b :=
+lemma ne_add {a b : natural} : a ≠ a + b :=
 begin
-  revert a,
-  induction b using knopp.natural.strong_induction with b ih,
-  intro a,
-  have h := le_or_gt (b % a) b,
-  cases h, cases h,
-  { replace h := le_of_mod_eq h, sorry }
+  induction a using knopp.natural.induction with a ih,
+  { intro h, rw add_comm at h, exact one_ne_succ h },
+  { intro h, rw [add_assoc, @add_comm 1, ← add_assoc] at h,
+    exact ih (add_inj_right h) }
+end
+
+lemma le_trans {a b c : natural} (h : a ≤ b) (g : b ≤ c): a ≤ c :=
+begin
+    cases h,
+    subst a, assumption,
+    cases g,
+    subst b, exact or.inr h,
+    cases h with x, cases g with y,
+    right, use x + y,
+    subst b, subst c,
+    rw ← add_assoc
+end
+
+lemma le_total {a b : natural} : a ≤ b ∨ b ≤ a := begin
+    induction b with b ih,
+    { right, cases a,
+      left, refl,
+      right, apply one_lt_succ },
+    { cases a,
+      { left, right,
+        apply one_lt_succ },
+      { cases ih,
+        { left, right, cases ih,
+          { rw ih, use 1, refl },
+          { cases ih with x h,
+            use x + 1,
+            rw ← add_assoc,
+            rw h,
+            refl }},
+        { cases ih,
+          { left, right, rw ← ih, use 1, refl },
+          { right, cases ih with x h,
+            cases x,
+            { left, exact h },
+            { right, use x, rw ← h,
+              rw succ_eq_add_one,
+              rw succ_eq_add_one,
+              rw @add_comm x,
+              rw ← add_assoc,
+              } } } } }
+end
+
+lemma le_antisymm {a b : natural} (h₁ : a ≤ b) (h₂ : b ≤ a) : a = b := begin
+    cases h₁, assumption,
+    cases h₂, symmetry, assumption,
+    cases h₁ with x h₁,
+    subst b,
+    cases h₂ with y h,
+    exfalso,
+    rw add_assoc at h,
+    exact ne_add h.symm
 end
 
 end natural
-
 end knopp
-
