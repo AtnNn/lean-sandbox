@@ -78,7 +78,7 @@ inductive lt : number → number → Prop
 
 def canonical : number → number
 | zero := zero
-| (fraction s a b) := fraction s (a / gcd a b) (b / gcd a b)
+| (fraction s a b) := fraction s (natural.div a (natural.gcd a b)) (natural.div b (natural.gcd a b))
 
 end number
 
