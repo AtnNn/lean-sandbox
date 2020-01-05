@@ -4,6 +4,7 @@ import tactic.interactive
 import tactic.rcases
 import tactic.tidy
 import tactic.wlog
+import lib.tactics
 
 universes u v
 
@@ -12,23 +13,18 @@ namespace natural
 
 lemma add_succ {a b : natural} : a + (b + 1) = (a + b) + 1 := rfl
 
-lemma one_add_eq_succ {a} : 1 + a = succ a :=
+lemma one_add_eq_succ {a : natural} : 1 + a = a + 1 :=
 begin
-  induction a using knopp.natural.induction with b ih,
+  induction a with b ih,
   { refl },
-  { rw add_succ, rw ih, refl }
+  { rw add_succ, rw ih }
 end
-
-lemma add_one_eq_succ {a : natural} : a + 1 = succ a := rfl
 
 lemma mul_succ {a b : natural} : a * (b + 1) = a + a * b := rfl
 
-@[simp]
-lemma succ_eq_add_one {a} : succ a = a + 1 := eq_comm.1 add_one_eq_succ
-
 lemma succ_add {a b : natural} : (a + 1) + b = (a + b) + 1 :=
 begin
-  induction b using knopp.natural.induction with b ih,
+  induction b with b ih,
   { refl },
   { rw add_succ,
     rw ih,
@@ -37,8 +33,8 @@ end
 
 lemma add_comm {a b : natural} : a + b = b + a :=
 begin
-  induction b using knopp.natural.induction with b ih,
-  { rw one_add_eq_succ, refl },
+  induction b with b ih,
+  { rw one_add_eq_succ },
   { rw add_succ,
     rw ih,
     rw succ_add }
@@ -47,7 +43,7 @@ end
 @[simp]
 lemma one_mul {a : natural} : 1 * a = a :=
 begin
-  induction a using knopp.natural.induction with b ih,
+  induction a with b ih,
   { refl },
   { rw mul_succ, rw ih, exact add_comm }
 end
@@ -57,7 +53,7 @@ lemma mul_one {a : natural} : a * 1 = a := rfl
 
 lemma add_assoc {a b c : natural} : a + b + c = a + (b + c) :=
 begin
-  induction c using knopp.natural.induction with c ih,
+  induction c with c ih,
   { rw add_comm,
     rw add_succ,
     rw add_comm },
@@ -69,7 +65,7 @@ end
 
 lemma succ_mul {a b : natural} : (a + 1) * b = b + (a * b) :=
 begin
-  induction b using knopp.natural.induction with b ih,
+  induction b with b ih,
   { rw mul_one,
     rw mul_one,
     rw add_comm },
@@ -88,14 +84,14 @@ end
 
 lemma mul_comm {a b : natural} : a * b = b * a :=
 begin
-  induction b using knopp.natural.induction with b ih,
+  induction b with b ih,
   { rw one_mul, refl },
   { rw mul_succ, rw ih, rw succ_mul }
 end
 
 lemma mul_add_dist {a b c: natural} : a * (b + c) = a * b + a * c :=
 begin
-  induction c using knopp.natural.induction with c ih,
+  induction c with c ih,
   { rw mul_succ,
     rw mul_one,
     rw add_comm },
@@ -110,7 +106,7 @@ end
 
 lemma mul_assoc {a b c : natural} : a * b * c = a * (b * c) :=
 begin
-  induction c using knopp.natural.induction with c ih,
+  induction c with c ih,
   { rw mul_one, rw mul_one },
   { rw mul_succ,
     rw ih,
@@ -118,35 +114,53 @@ begin
     rw mul_add_dist }
 end
 
-lemma succ_ne_one {a : natural} (h : a + 1 = 1) : false := natural.no_confusion h
+def one_ne_succ {a b : natural} : ¬(1 = a + b) :=
+begin
+  apply b.cases_on,
+  { delta natural, apply type.no_confusion },
+  { intro b, rw add_succ, delta natural at *, apply type.no_confusion }
+end
+
+lemma succ_ne_one {a : natural} : ¬(a + 1 = 1) := ne.symm one_ne_succ
+
+lemma succ_inj {a b : natural} : a + 1 = b + 1 → a = b := begin
+  delta natural at *,
+  exact type.succ.inj
+end
+
+lemma succ_inj_eq {a b : natural} : (a + 1 = b + 1) = (a = b) :=
+begin
+  delta natural,
+  apply type.succ.inj_eq
+end
 
 lemma add_ne_self {a b : natural} (h : a + b = a) : false :=
 begin
-  induction a using knopp.natural.induction with a ih,
+  induction a with a ih,
   { revert h,
     rw add_comm,
     exact succ_ne_one },
   { rw succ_add at h,
-    replace h := succ.inj h,
+    replace h := succ_inj h,
     exact ih h }
 end
 
 lemma eq_one_of_mul_eq {a b : natural} (h : a * b = b) : a = 1 :=
 begin
-  cases a,
+  cases_on a,
   { refl },
-  { rw [succ_eq_add_one, succ_mul] at h,
+  { rw [succ_mul] at h,
     exfalso,
     exact add_ne_self h }
 end
 
 lemma add_inj_left {a b c : natural} (h : a + b = a + c) : b = c :=
 begin
-  induction a using knopp.natural.induction with a ih,
+  induction a with a ih,
   { repeat {rw one_add_eq_succ at h},
-    exact succ.inj h },
+    exact succ_inj h },
   { repeat {rw succ_add at h},
-    exact ih (succ.inj h) }
+    exact ih (succ_inj h) }
 end
 
 lemma add_inj_right {a b c : natural} (h : a + c = b + c) : a = b := begin
@@ -155,24 +169,21 @@ lemma add_inj_right {a b c : natural} (h : a + c = b + c) : a = b := begin
   exact add_inj_left h
 end
 
-@[simp]
-lemma one_eq_1 : one = 1 := rfl
-
 lemma mul_inj {a b c : natural} (h : a * c = b * c) : a = b :=
 begin
   revert a,
-  induction b using knopp.natural.induction with b ih,
+  induction b with b ih,
   { intros a h,
     rw one_mul at h,
     exact eq_one_of_mul_eq h },
   { intros a h,
     rw succ_mul at h,
-    cases a,
-    { rw [one_eq_1, one_mul] at h,
+    cases_on a,
+    { rw [one_mul] at h,
       replace h := eq.symm h,
       exfalso,
       exact add_ne_self h },
-    { rw [succ_eq_add_one, succ_mul] at h,
+    { rw [succ_mul] at h,
       replace h := add_inj_left h,
       congr,
       exact ih h } }
@@ -188,7 +199,7 @@ end
 
 instance decidable_lt : Π {a b : natural}, decidable (lt a b)
 | 1 1 := is_false (by { rintro ⟨⟩, apply add_ne_self, assumption })
-| 1 (a + 1) := is_true (by { split, rw @one_add_eq_succ a, refl })
+| 1 (a + 1) := is_true (by { split, rw @one_add_eq_succ a })
 | (a + 1) 1 := is_false (by { rintro ⟨⟩, rw succ_add at *, apply succ_ne_one, assumption })
 | (a + 1) (b + 1) := match @decidable_lt a b with
   | is_false h := is_false (by { intro hh, exact h (lt_of_succ_lt_succ hh) })
@@ -197,15 +208,15 @@ end
 
 lemma add_ne_one {a b : natural} (h : a + b = 1) : false :=
 begin
-  cases b,
+  cases_on b,
   { rw add_comm at h, exact add_ne_self h },
-  { rw [succ_eq_add_one, add_succ] at h, exact succ_ne_one h }
+  { rw [add_succ] at h, exact succ_ne_one h }
 end
 
 @[simp]
 lemma succ_pred_eq_self {a : natural} {h} : (pred a) + 1 = a :=
 begin
-  cases a,
+  cases_on a,
   { cases h,
     exfalso,
     apply add_ne_self,
@@ -216,13 +227,12 @@ end
 lemma one_lt_succ {a : natural} : 1 < a + 1 :=
 begin
   split,
-  rw one_add_eq_succ,
-  refl
+  rw one_add_eq_succ
 end
 
 lemma one_lt_of_succ_lt {a b : natural} (h : a + 1 < b) : 1 < b :=
 begin
-  cases b,
+  cases_on b,
   { exfalso,
     cases h with c h,
     rw [@add_comm a, add_assoc] at h,
@@ -237,10 +247,9 @@ set_option trace.check true
 
 lemma eq_pred_of_succ_eq {n m : natural} (h : n + 1 = m) : n = pred m (by { use n, rwa add_comm }):=
 begin
-  cases m,
+  cases_on m,
   { cases h },
   { revert h,
-    rw succ_eq_add_one,
     intro h,
     rw pred_succ,
     exact add_inj_right h }
@@ -272,7 +281,7 @@ end
 lemma eq_sub_of_add_eq {a b c : natural} (h : a + b = c) : a = sub c b ⟨a, by {rw add_comm, assumption}⟩ :=
 begin
   revert c,
-  induction b using knopp.natural.induction with b ih,
+  induction b with b ih,
   { intros c h,
     unfold sub sub.total,
     subst c,
@@ -301,7 +310,6 @@ begin
   { intros a h,
     rw sub_succ_eq_pred_sub,
     revert h,
-    rw succ_eq_add_one,
     intro h,
     rw ih (lt_pred_of_succ_lt h),
     congr }
@@ -310,8 +318,8 @@ end
 @[simp]
 lemma sub_add_eq {a b : natural} {h} : a.sub b + b = a :=
 begin
-  induction b using knopp.natural.induction with b ih,
-  { cases a,
+  induction b with b ih,
+  { cases_on a,
     { exfalso, cases h, apply add_ne_self, assumption },
     { unfold sub sub.total, refl } },
   { rw add_succ,
@@ -330,7 +338,7 @@ end
 
 lemma one_lt_add {a b : natural} : 1 < a + b :=
 begin
-  cases b; unfold has_add.add add; exact one_lt_succ
+  cases_on b; unfold has_add.add add; exact one_lt_succ
 end
 
 lemma add_eq_succ {a b : natural} : a + b = (pred (a + b) one_lt_add) + 1 :=
@@ -338,39 +346,11 @@ begin
   rw succ_pred_eq_self
 end
 
-lemma sizeof_succ_eq_succ_sizeof {a : natural} : sizeof (succ a) = 1 + (sizeof a) :=
-begin
-  unfold sizeof has_sizeof.sizeof natural.sizeof
-end
-
 lemma not_lt_one {a : natural} (h : a < 1) : false :=
 begin
   cases h with c h,
   rw add_eq_succ at h,
   exact succ_ne_one h
-end
-
-lemma pos_sizeof {a : natural} : sizeof a > 0 :=
-begin
-  cases a; unfold sizeof has_sizeof.sizeof natural.sizeof,
-  { constructor },
-  { exact nat.zero_lt_one_add _ }
-end
-
-lemma lt_sizeof_of_lt {a b : natural} (h : a < b) : sizeof a < sizeof b :=
-begin
-  revert a,
-  induction b with b ih; intros a h,
-  { exfalso,
-    exact not_lt_one h },
-  { rw sizeof_succ_eq_succ_sizeof,
-    cases a,
-    { rw (by { unfold sizeof has_sizeof.sizeof natural.sizeof } : sizeof one = 1),
-      apply nat.lt_add_of_pos_right,
-      exact pos_sizeof },
-    { rw sizeof_succ_eq_succ_sizeof,
-      replace h := ih (lt_of_succ_lt_succ h),
-      simp [h] } }
 end
 
 lemma not_lt_of_eq {a : natural} : ¬ a < a :=
@@ -393,11 +373,11 @@ end
 lemma le_of_lt_succ {a b : natural} (h : a < b + 1) : a ≤ b :=
 begin
   cases h with c h,
-  cases c with c,
+  cases_on c,
   { left, exact add_inj_right h },
   { right,
-    use c,
-    rw [succ_eq_add_one, ←add_assoc] at h,
+    use m,
+    rw ←add_assoc at h,
     exact add_inj_right h }
 end
 
@@ -413,7 +393,7 @@ end
 lemma strong_induction {p : natural → Sort u} (n : natural) (h : ∀ n, (∀ m, m < n → p m) → p n) : p n :=
 begin
   suffices hh : ∀ n m, m < n → p m, { apply h, apply hh },
-  intros n, induction n using knopp.natural.induction with n ih,
+  intros n, induction n with n ih,
   { intros m hh, exfalso, apply not_lt_one, exact hh },
   { intros m hh,
     apply or.by_cases (le_of_lt_succ hh),
@@ -426,9 +406,9 @@ lemma le_self {a : natural} : a ≤ a := or.inl rfl
 @[simp]
 lemma one_le {a : natural} : 1 ≤ a :=
 begin
-  cases a,
+  cases_on a,
   { left, refl },
-  { right, use a, exact one_add_eq_succ }
+  { right, use m, rw add_comm }
 end
 
 lemma le_or_gt (a b : natural) : a ≤ b ∨ a > b :=
@@ -436,16 +416,15 @@ if h₁ : b < a then or.inr h₁ else
 if h₂ : a = b then or.inl (or.inl h₂) else
 if h₃ : a < b then or.inl (or.inr h₃) else begin
   exfalso,
-  induction a using knopp.natural.induction with a ih,
-  { cases b, exact h₂ rfl, exact h₃ one_lt_succ },
+  induction a with a ih,
+  { cases_on b, exact h₂ rfl, exact h₃ one_lt_succ },
   { apply ih; intro h,
     { apply h₁, cases h with c h, use c + 1, rw ←add_assoc, congr, assumption },
     { subst a, apply h₁, constructor, refl },
-    { cases h with c h, subst b, cases c,
+    { cases h with c h, subst b, cases_on c,
       { apply h₂, refl },
       { apply h₃, constructor,
-        rw succ_eq_add_one,
-        rw @add_comm c,
+        rw @add_comm m,
         rw add_assoc } } }
 end
 
@@ -472,7 +451,7 @@ end
 @[simp]
 lemma add_sub_eq {a b : natural} {h} : sub (a + b) b h = a :=
 begin
-  induction b using knopp.natural.induction with b ih,
+  induction b with b ih,
   { refl },
   { conv in (a + (b + 1)) { rw ← add_assoc },
     rwa succ_sub_succ, exact ih }
@@ -483,13 +462,13 @@ instance eq.decidable : Π {a b : natural}, decidable (a = b)
 | 1 (_ + 1) := is_false (by { intro h, exact succ_ne_one (eq.symm h)})
 | (_ + 1) 1 := is_false (by { intro h, exact succ_ne_one h})
 | (a + 1) (b + 1) := match @eq.decidable a b with
-  | is_true h := by { rw ← succ.inj_eq at h, exact is_true h }
-  | is_false h := by { apply is_false, intro hh, exact h (succ.inj hh) }
+  | is_true h := by { rw ← succ_inj_eq at h, exact is_true h }
+  | is_false h := by { apply is_false, intro hh, exact h (succ_inj hh) }
 end
 
 lemma lt_of_add_lt_add {a b c : natural} (h : a + b < a + c) : b < c :=
 begin
-  induction a using knopp.natural.induction with a ih,
+  induction a with a ih,
   { repeat { rw one_add_eq_succ at h },
     exact lt_of_succ_lt_succ h },
   { repeat { rw succ_add at h },
@@ -519,13 +498,13 @@ end
 lemma sub_dvd_of_dvd {a b: natural} (h : a ∣ b) {hle} : sub a b ∣ b :=
 begin
   cases h with x h,
-  cases x,
-  { rw [one_eq_1, mul_one] at h, subst a, exfalso, exact le_irrefl hle },
-  { rw [succ_eq_add_one, mul_succ] at h,
+  cases_on x,
+  { rw mul_one at h, subst a, exfalso, exact le_irrefl hle },
+  { rw mul_succ at h,
     subst a,
     conv in (b + _) { rw add_comm },
     rw add_sub_eq,
-    use x }
+    use m }
 end
 
 lemma dvd.rfl {a : natural} : a ∣ a :=
@@ -544,19 +523,14 @@ end
 
 lemma ne_succ {a : natural} : a ≠ a + 1 :=
 begin
-  induction a using knopp.natural.induction with a ih,
+  induction a with a ih,
   { intro h, cases h },
   { intro h, exact ih (add_inj_right h) }
 end
 
-lemma one_ne_succ {a : natural} (h : 1 = a + 1) : false :=
-begin
-  exact natural.no_confusion h
-end
-
 lemma ne_add {a b : natural} : a ≠ a + b :=
 begin
-  induction a using knopp.natural.induction with a ih,
+  induction a with a ih,
   { intro h, rw add_comm at h, exact one_ne_succ h },
   { intro h, rw [add_assoc, @add_comm 1, ← add_assoc] at h,
     exact ih (add_inj_right h) }
@@ -576,29 +550,26 @@ end
 
 lemma le_total {a b : natural} : a ≤ b ∨ b ≤ a := begin
     induction b with b ih,
-    { right, cases a,
+    { right, cases_on a,
       left, refl,
       right, apply one_lt_succ },
-    { cases a,
+    { cases_on a,
       { left, right,
         apply one_lt_succ },
       { cases ih,
         { left, right, cases ih,
-          { rw ih, use 1, refl },
+          { rw ih, use 1 },
           { cases ih with x h,
             use x + 1,
             rw ← add_assoc,
-            rw h,
-            refl }},
+            rw h } },
         { cases ih,
-          { left, right, rw ← ih, use 1, refl },
+          { left, right, rw ← ih, use 1 },
           { right, cases ih with x h,
-            cases x,
+            cases_on x,
             { left, exact h },
-            { right, use x, rw ← h,
-              rw succ_eq_add_one,
-              rw succ_eq_add_one,
-              rw @add_comm x,
+            { right, use m_1, rw ← h,
+              rw @add_comm m_1,
               rw ← add_assoc,
               } } } } }
 end
@@ -612,6 +583,23 @@ lemma le_antisymm {a b : natural} (h₁ : a ≤ b) (h₂ : b ≤ a) : a = b := b
     exfalso,
     rw add_assoc at h,
     exact ne_add h.symm
+end
+
+lemma ge_of_not_lt {a b : natural} (h : ¬(a < b)) : a ≥ b :=
+begin
+  cases le_or_gt a b with h₂ h₂, cases h₂,
+  { left, symmetry, assumption },
+  { exfalso, exact h h₂ },
+  { right, assumption }
+end
+
+instance has_well_founded : has_well_founded natural :=
+begin
+  use (<),
+  constructor, intro x,
+  induction x using knopp.natural.strong_induction with x ih,
+  constructor, intros y h,
+  apply ih, assumption
 end
 
 end natural

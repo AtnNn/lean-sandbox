@@ -19,6 +19,13 @@ meta def let_eq (h : parse ident) (x : parse (tk ":" >> ident)) (v : parse (tk "
   «clear» [h],
   «intros» [x, h]
 
+meta def cases_on : parse lean.parser.ident → tactic unit
+| id := do
+  «revert» [id],
+  «intro» id,
+  co <- resolve_name (id <.> "cases_on"),
+  `[apply %%co; intros]
+
 end interactive
 end tactic
 

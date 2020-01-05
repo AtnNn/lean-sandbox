@@ -4,19 +4,27 @@ universes u v
 
 namespace knopp
 
-inductive natural | one : natural | succ : natural → natural
+inductive natural.type | one : natural.type | succ : natural.type → natural.type
+
+def natural := natural.type
 
 namespace natural
 
-instance has_one : has_one natural := ⟨one⟩
+instance has_one : has_one natural := ⟨natural.type.one⟩
 
 def add : natural → natural → natural
-| n 1 := succ n
-| n (succ m) := succ (add n m)
+| n type.one := type.succ n
+| n (type.succ m) := type.succ (add n m)
 
 instance has_add : has_add natural := ⟨add⟩
 
-def induction {p : natural → Sort u} {a : natural} : p 1 → (∀ x, p x → p (x + 1)) → p a := natural.rec_on a
+@[irreducible, elab_as_eliminator]
+def cases_on {p : natural → Sort u} (n : natural) : p 1 → (∀ m, p (m + 1)) → p n := type.cases_on n
+
+@[irreducible, elab_as_eliminator]
+def rec {p : natural → Sort u} : p 1 → (∀ x, p x → p (x + 1)) → Π a, p a := type.rec
+
+attribute [irreducible] natural
 
 def mul : natural → natural → natural
 | n 1 := n

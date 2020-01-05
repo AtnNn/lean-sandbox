@@ -2,9 +2,8 @@ import knopp.natural.mod
 
 namespace knopp namespace natural
 
-lemma gcd_wf (n m : natural) (hx : m % n ≠ n) : sizeof (m % n) < sizeof n :=
+lemma gcd_wf (n m : natural) (hx : m % n ≠ n) : m % n < n :=
 begin
-  apply lt_sizeof_of_lt,
   cases @mod_le_right m n,
   { constructor,
     exfalso,
@@ -73,7 +72,7 @@ end
 @[simp]
 lemma gcd_dvd_left {a b : natural} : a ∣ gcd a b :=
 begin
-  suffices ∀ k, (∀ x y, x < k → y < k → x ∣ gcd x y) → 
+  sorry
 end
 
 end natural end knopp

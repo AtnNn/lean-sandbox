@@ -2,11 +2,12 @@ import knopp.natural.lemmas
 
 namespace knopp namespace natural
 
+--set_option pp.all true
+
 def mod : natural → natural → natural
 | a b := if h : b < a then
-have natural.sizeof (sub a b h) < natural.sizeof a :=
-  lt_sizeof_of_lt (sub_lt_of_lt h),
-mod (a.sub b) b else a
+have sub a b h < a := sub_lt_of_lt h,
+mod (sub a b h) b else a
 
 instance has_mod : has_mod natural := ⟨mod⟩
 
@@ -79,11 +80,14 @@ begin
   { exfalso, exact not_lt_one h }
 end
 
+lemma mod_mul {a b : natural} : ∃ x, b * x + (a % b) = a :=
+begin
+  sorry
+end
+
 lemma le_of_mod_eq {a b : natural} (h : a % b = a) : a ≤ b :=
 begin
-  rw mod_def at h,
-  split_ifs at h,
-  
+  sorry
 end
 
 end natural end knopp
