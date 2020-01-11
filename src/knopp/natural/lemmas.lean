@@ -671,5 +671,16 @@ begin
   exact (eq_sub_of_add_eq h).symm
 end
 
+lemma not_le_sub {a b : natural} {h₁} (h : a ≤ sub a b h₁) : false :=
+begin
+  cases sub_lt_of_lt h₁ with x h₂,
+  cases h,
+  { conv at h₂ { to_rhs, rw h },
+    exact add_ne_self h₂ },
+  { cases h with y h,
+    rw [← h, add_assoc] at h₂,
+    exact add_ne_self h₂ }
+end
+
 end natural
 end knopp

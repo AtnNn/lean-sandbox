@@ -80,17 +80,39 @@ begin
   { exfalso, exact not_lt_one h }
 end
 
-lemma mod_mul {a b : natural} : ∃ x, b * x + (a % b) = a :=
+lemma mod_mul {a b : natural} (h : a > b) : ∃ x, b * x + (a % b) = a :=
 begin
-  revert a,
-  induction b using knopp.natural.strong_induction with b ih,
-  intro a,
-  
+  revert b,
+  apply knopp.natural.strong_induction a,
+  intros c ih b h,
+  replace ih := @ih (sub c b h) sub_lt_self b,
+  rw mod_step, show c > b, assumption,
+  by_cases h₁ : sub c b h > b,
+  { specialize ih h₁,
+    cases ih with y ih,
+    use y + 1,
+    rw [mul_succ, @add_comm b, add_assoc, @add_comm b, ← add_assoc, ih, sub_add_eq]
+     },
+  { use 1,
+    rw mod_of_le,
+    rw [mul_one, add_comm],
+    rw sub_add_eq,
+    cases le_or_gt _ _,
+    assumption,
+    exfalso,
+    apply h₁,
+    assumption }
 end
 
 lemma le_of_mod_eq {a b : natural} (h : a % b = a) : a ≤ b :=
 begin
-  sorry
+  cases le_or_gt a b with h₁ h₁,
+  { assumption },
+  { exfalso,
+    rw mod_step h₁ at h,
+    have h₂ := mod_le_left,
+    rw h at h₂,
+    exact not_le_sub h₂ }
 end
 
 end natural end knopp

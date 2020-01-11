@@ -73,7 +73,11 @@ end
 @[simp]
 lemma gcd_dvd_left {a b : natural} : a ∣ gcd a b :=
 begin
-  sorry
+  by_cases a = b,
+  { subst a, rw gcd_same, use 1, simp },
+  wlog h₁ : a < b,
+  { cases lt_or_ge a b, },
+  
 end
 
 end natural end knopp
