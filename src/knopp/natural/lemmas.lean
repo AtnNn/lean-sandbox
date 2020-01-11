@@ -40,6 +40,8 @@ begin
     rw succ_add }
 end
 
+instance add.commutative : is_commutative natural add := ⟨@add_comm⟩
+
 @[simp]
 lemma one_mul {a : natural} : 1 * a = a :=
 begin
@@ -62,6 +64,8 @@ begin
     rw add_succ,
     rw add_succ }
 end
+
+instance add.associative : is_associative natural add := ⟨@add_assoc⟩
 
 lemma succ_mul {a b : natural} : (a + 1) * b = b + (a * b) :=
 begin
@@ -89,6 +93,8 @@ begin
   { rw mul_succ, rw ih, rw succ_mul }
 end
 
+instance mul.commutative : is_commutative natural mul := ⟨@mul_comm⟩
+
 lemma mul_add_dist {a b c: natural} : a * (b + c) = a * b + a * c :=
 begin
   induction c with c ih,
@@ -113,6 +119,8 @@ begin
     rw mul_succ,
     rw mul_add_dist }
 end
+
+instance mul.associative : is_associative natural mul := ⟨@mul_assoc⟩
 
 def one_ne_succ {a b : natural} : ¬(1 = a + b) :=
 begin
@@ -197,7 +205,7 @@ begin
   exact add_inj_right h
 end
 
-instance decidable_lt : Π {a b : natural}, decidable (lt a b)
+instance decidable_lt : Π {a b : natural}, decidable (a < b)
 | 1 1 := is_false (by { rintro ⟨⟩, apply add_ne_self, assumption })
 | 1 (a + 1) := is_true (by { split, rw @one_add_eq_succ a })
 | (a + 1) 1 := is_false (by { rintro ⟨⟩, rw succ_add at *, apply succ_ne_one, assumption })
@@ -302,7 +310,7 @@ begin
   assumption
 end
 
-lemma sub_succ {a b : natural} (h : b + 1 < a) : sub a (b + 1) = pred (sub a b (lt_of_succ_lt h)) (sub_succ.pred h) :=
+lemma sub_succ {a b : natural} {h : b + 1 < a} : sub a (b + 1) = pred (sub a b (lt_of_succ_lt h)) (sub_succ.pred h) :=
 begin
   revert a,
   induction b with b ih,
@@ -311,7 +319,7 @@ begin
     rw sub_succ_eq_pred_sub,
     revert h,
     intro h,
-    rw ih (lt_pred_of_succ_lt h),
+    rw @ih _ (lt_pred_of_succ_lt h),
     congr }
 end
 
@@ -390,6 +398,7 @@ end
 | 1 (m + 1) := decidable.is_false (succ_ne_one ∘ eq.symm)
 | (n + 1) 1 := decidable.is_false succ_ne_one
 
+@[elab_as_eliminator]
 lemma strong_induction {p : natural → Sort u} (n : natural) (h : ∀ n, (∀ m, m < n → p m) → p n) : p n :=
 begin
   suffices hh : ∀ n m, m < n → p m, { apply h, apply hh },
@@ -600,6 +609,66 @@ begin
   induction x using knopp.natural.strong_induction with x ih,
   constructor, intros y h,
   apply ih, assumption
+end
+
+lemma not_add_lt {a b : natural} (h : a + b < a) : false :=
+begin
+  induction b with b ih,
+  { cases h with _ h, rw add_assoc at h, exact add_ne_self h },
+  { rw add_succ at h,
+    apply ih,
+    exact lt_of_succ_lt h }
+end
+
+lemma not_mul_lt {a b : natural} (h : a * b < a) : false :=
+begin
+  induction b with b ih,
+  { exact not_lt_of_eq h },
+  { rw mul_succ at h,
+    exact not_add_lt h }
+end
+
+def sub_one {a : natural} {h₂} : sub a 1 h₂ = pred a :=
+begin
+  unfold sub sub.total,
+  cases_on a,
+  { cases h₂ with x h, exfalso, rw add_comm at h, exact succ_ne_one h },
+  { unfold pred }
+end
+
+lemma succ_pred {a : natural} {h} : pred a + 1 = a :=
+begin
+  cases_on a;
+  unfold pred pred.total,
+  exfalso,
+  exact not_lt_of_eq h
+end
+
+lemma eq_succ_of_pred_eq {a b : natural} {h₁} (h : pred a = b) : a = b + 1 :=
+begin
+  cases_on a,
+  { exfalso, exact not_lt_of_eq h₁ },
+  { congr, rw pred_succ at h, assumption }
+end
+
+lemma succ_sub {a b} (h : a > b) {h₁} : sub (a + 1) b h₁ = sub a b h + 1 :=
+begin
+  induction b with b ih,
+  { rw sub_one, rw sub_one, simp },
+  { rw sub_succ, rw sub_succ,
+    rw succ_pred,
+    symmetry,
+    apply eq_pred_of_succ_eq,
+    symmetry,
+    have h₂ : a > b, { cases h with x h, use x + 1, subst a, ac_refl },
+    exact ih h₂ }
+end
+
+lemma sub_step {a b : natural} {_} : sub (a + b) b = a :=
+begin
+  generalize h : a + b = x,
+  conv in (a + b) { rw h },
+  exact (eq_sub_of_add_eq h).symm
 end
 
 end natural

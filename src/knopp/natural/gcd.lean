@@ -16,6 +16,7 @@ def gcd : natural → natural → natural
 | n m := let x := m % n in if h: x = n then x else
 have hh : _ := gcd_wf n m h,
 gcd x n
+using_well_founded lib.wf_tacs
 
 lemma gcd_def' {a b : natural} : gcd a b = if b % a = a then b % a else gcd (b % a) a :=
 begin

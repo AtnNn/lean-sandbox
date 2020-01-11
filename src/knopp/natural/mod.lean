@@ -1,13 +1,13 @@
 import knopp.natural.lemmas
+import tactic.well_founded_tactics
 
 namespace knopp namespace natural
 
---set_option pp.all true
-
 def mod : natural → natural → natural
 | a b := if h : b < a then
-have sub a b h < a := sub_lt_of_lt h,
-mod (sub a b h) b else a
+have sub.total a b < a := sub_lt_of_lt h,
+mod (sub.total a b) b else a
+using_well_founded lib.wf_tacs
 
 instance has_mod : has_mod natural := ⟨mod⟩
 
@@ -82,7 +82,10 @@ end
 
 lemma mod_mul {a b : natural} : ∃ x, b * x + (a % b) = a :=
 begin
-  sorry
+  revert a,
+  induction b using knopp.natural.strong_induction with b ih,
+  intro a,
+  
 end
 
 lemma le_of_mod_eq {a b : natural} (h : a % b = a) : a ≤ b :=
