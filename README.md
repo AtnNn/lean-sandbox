@@ -1,12 +1,6 @@
 # L∃∀N Sandbox
 
-- [logic_and_proof](src/logic_and_proof/): working through exercises in https://leanprover.github.io/logic_and_proof/
-- [projecteuler](src/projecteuler/): working through problems from https://projecteuler.net/
-- [advent_of_code_2019](src/advent_of_code_2019/): https://adventofcode.com/2019
-- [xena_challenge](src/xena_challenge/): https://github.com/kbuzzard/xena/blob/master/Maths_Challenges/challenges.md
-- [100_theorems](src/100_theorems/): http://www.cs.ru.nl/~freek/100/
-- [knopp](src/knopp/): https://archive.org/stream/theoryandapplica031692mbp/
-- [docs](src/docs/): old collection of papers and presentations about lean
+This repository contains exercises and toy projects to experiment with the Lean language and ecosystem.
 
 ## Links
 
