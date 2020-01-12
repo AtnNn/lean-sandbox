@@ -1,7 +1,7 @@
-import knopp.natural.lemmas
+import positive_nat.lemmas
 import tactic.well_founded_tactics
 
-namespace knopp namespace natural
+namespace positive_nat namespace natural
 
 def mod : natural → natural → natural
 | a b := if h : b < a then
@@ -44,7 +44,7 @@ end
 
 lemma mod_le_right {a b : natural} : a % b ≤ b :=
 begin
-  induction a using knopp.natural.strong_induction with a ih,
+  induction a using positive_nat.natural.strong_induction with a ih,
   apply cases_le_or_gt a b; intro h,
   { rw mod_of_le; assumption },
   { rw mod_step,
@@ -57,7 +57,7 @@ begin
   suffices h : ∀ x, x ≤ n → (x % m) ≤ n,
   { apply h, exact or.inl rfl, },
   { intros x h,
-    induction x using knopp.natural.strong_induction with x ih,
+    induction x using positive_nat.natural.strong_induction with x ih,
     rw mod_def, by_cases hh: m < x,
     { rw dif_pos, tactic.swap,
       { assumption, },
@@ -83,7 +83,7 @@ end
 lemma mod_mul {a b : natural} (h : a > b) : ∃ x, b * x + (a % b) = a :=
 begin
   revert b,
-  apply knopp.natural.strong_induction a,
+  apply positive_nat.natural.strong_induction a,
   intros c ih b h,
   replace ih := @ih (sub c b h) sub_lt_self b,
   rw mod_step, show c > b, assumption,
@@ -126,4 +126,4 @@ begin
     rw [← h₅, h₂, h₁, mul_add_dist, mul_assoc] }
 end
 
-end natural end knopp
+end natural end positive_nat

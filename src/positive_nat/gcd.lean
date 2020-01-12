@@ -1,6 +1,6 @@
-import knopp.natural.mod
+import positive_nat.mod
 
-namespace knopp namespace natural
+namespace positive_nat namespace natural
 
 lemma gcd_wf (n m : natural) (hx : m % n ≠ n) : m % n < n :=
 begin
@@ -74,11 +74,11 @@ end
 @[simp]
 lemma gcd_dvd_left_of_le {a b : natural} (h : b ≤ a) : gcd a b ∣ a :=
 begin
-  
+  sorry
 end
 -- mod_le_right
 -- lt_of_le_lt
 
-end natural end knopp
+end natural end positive_nat
 
 #print instances has_dvd

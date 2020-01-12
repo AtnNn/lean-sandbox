@@ -1,4 +1,4 @@
-import knopp.natural.def
+import positive_nat.def
 import data.nat.basic
 import tactic.interactive
 import tactic.rcases
@@ -8,7 +8,7 @@ import lib.tactics
 
 universes u v
 
-namespace knopp
+namespace positive_nat
 namespace natural
 
 lemma add_succ {a b : natural} : a + (b + 1) = (a + b) + 1 := rfl
@@ -606,7 +606,7 @@ instance has_well_founded : has_well_founded natural :=
 begin
   use (<),
   constructor, intro x,
-  induction x using knopp.natural.strong_induction with x ih,
+  induction x using positive_nat.natural.strong_induction with x ih,
   constructor, intros y h,
   apply ih, assumption
 end
@@ -693,4 +693,4 @@ begin
 end
 
 end natural
-end knopp
+end positive_nat

@@ -1,6 +1,6 @@
-import knopp.natural.lemmas
+import positive_nat.lemmas
 
-namespace knopp namespace natural
+namespace positive_nat namespace natural
 
 def div.total : natural → natural → natural
 | a b :=
@@ -31,7 +31,7 @@ end
 
 lemma div_eq_div_total {a b : natural} {h} : div a b = div.total a b :=
 begin
-  induction a using knopp.natural.strong_induction with a ih,
+  induction a using positive_nat.natural.strong_induction with a ih,
   delta div, rw div.impl.equations._eqn_1,
   rw div.total.equations._eqn_1,
   split_ifs with hh,
@@ -113,4 +113,4 @@ begin
     simp }
 end
 
-end natural end knopp
+end natural end positive_nat

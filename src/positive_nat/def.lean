@@ -2,7 +2,7 @@ import tactic.tidy
 
 universes u v
 
-namespace knopp
+namespace positive_nat
 
 inductive natural.type | one : natural.type | succ : natural.type → natural.type
 
@@ -62,5 +62,5 @@ instance has_dvd : has_dvd natural := ⟨dvd⟩
 instance is_inhabited : inhabited natural := ⟨1⟩
 
 end natural
-end knopp
+end positive_nat
 
