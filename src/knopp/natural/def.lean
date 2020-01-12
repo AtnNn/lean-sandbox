@@ -55,9 +55,11 @@ def le (a b : natural) := a = b ∨ a < b
 
 instance has_le : has_le natural := ⟨le⟩
 
-def dvd (a b : natural) : Prop := ∃ c, a = b * c
+def dvd (a b : natural) : Prop := ∃ c, b = a * c
 
 instance has_dvd : has_dvd natural := ⟨dvd⟩
+
+instance is_inhabited : inhabited natural := ⟨1⟩
 
 end natural
 end knopp

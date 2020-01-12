@@ -23,6 +23,7 @@ begin
   conv { to_lhs, rw gcd.equations._eqn_1 }
 end
 
+@[simp]
 lemma gcd_same {a : natural} : gcd a a = a :=
 begin
   rw gcd_def',
@@ -71,13 +72,13 @@ begin
 end
 
 @[simp]
-lemma gcd_dvd_left {a b : natural} : a ∣ gcd a b :=
+lemma gcd_dvd_left_of_le {a b : natural} (h : b ≤ a) : gcd a b ∣ a :=
 begin
-  by_cases a = b,
-  { subst a, rw gcd_same, use 1, simp },
-  wlog h₁ : a < b,
-  { cases lt_or_ge a b, },
   
 end
+-- mod_le_right
+-- lt_of_le_lt
 
 end natural end knopp
+
+#print instances has_dvd

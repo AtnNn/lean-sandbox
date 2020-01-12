@@ -504,7 +504,7 @@ begin
   assumption
 end
 
-lemma sub_dvd_of_dvd {a b: natural} (h : a ∣ b) {hle} : sub a b ∣ b :=
+lemma sub_dvd_of_dvd {a b: natural} (h : b ∣ a) {hle} : b ∣ sub a b :=
 begin
   cases h with x h,
   cases_on x,
@@ -680,6 +680,16 @@ begin
   { cases h with y h,
     rw [← h, add_assoc] at h₂,
     exact add_ne_self h₂ }
+end
+
+lemma lt_of_le_lt {a b c : natural} (h₁ : a ≤ b) (h₂ : b < c) : a < c :=
+begin
+  cases h₁,
+  { subst a, assumption },
+  { cases h₁ with x, cases h₂ with y,
+    subst c, subst b,
+    use x + y,
+    ac_refl }
 end
 
 end natural

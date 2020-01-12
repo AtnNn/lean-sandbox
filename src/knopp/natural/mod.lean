@@ -115,4 +115,15 @@ begin
     exact not_le_sub h₂ }
 end
 
+lemma dvd_of_dvd_mod_of_dvd {a b c : natural} (h₁ : a ∣ b) (h₂ : a ∣ c % b) : a ∣ c :=
+begin
+  cases le_or_gt c b with h₃ h₄,
+  { rw mod_of_le h₃ at h₂, assumption },
+  { cases mod_mul h₄ with k h₅,
+    cases h₁ with x h₁,
+    cases h₂ with y h₂,
+    use x * k + y,
+    rw [← h₅, h₂, h₁, mul_add_dist, mul_assoc] }
+end
+
 end natural end knopp

@@ -13,13 +13,13 @@ lemma div_wf {a b : natural} (h : b < a) : sub a b h < a := begin
   exact sub_lt_self
 end
 
-def div.impl : Π (a b : natural), (a ∣ b) → natural
+def div.impl : Π (a b : natural), (b ∣ a) → natural
 | a b hd := if h : b < a then
 have hh : _ := div_wf h,
 div.impl (sub a b h) b (sub_dvd_of_dvd hd)  + 1 else 1
 using_well_founded lib.wf_tacs
 
-def div (a b : natural) (h : a ∣ b . autoparam) := div.impl a b h
+def div (a b : natural) (h : b ∣ a . autoparam) := div.impl a b h
 
 def div_def {a b : natural} {h} : div a b h = if hh : b < a then div (sub a b hh) b (sub_dvd_of_dvd h) + 1 else 1 :=
 begin
