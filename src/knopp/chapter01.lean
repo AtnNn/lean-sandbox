@@ -1,287 +1,29 @@
+import lib.tactics
 import knopp.common
 
--- ordered sequence of natural numbers 1, 2, 3, ...
-import knopp.natural
+universes u
 
--- 1. The system of rational numbers and its gaps
-import knopp.rational
+namespace knopp
+
+def sequence := ℕ → ℚ
+
+def bound (xₙ : sequence) (K : ℚ) : Prop := ∀ i, (-K ≤ xₙ i ∧ xₙ i ≤ K)
+
+def bounded (xₙ : sequence) : Prop := ∃ K, bound xₙ K
+
+def sequence_6_1 : sequence := λ n, 1 / (n + 1)
+def sequence_6_2 : sequence := λ n, 2 ^ (n + 1)
+def sequence_6_3 (a : ℚ) : sequence := λ n, a ^ (n + 1)
+def sequence_6_4 : sequence := λ n, ↑((n + 1) % 2)
+def sequence_6_6 : sequence := λ n, ((-1) ^ n) / (n + 1)
+def sequence_6_7 : sequence := nat.fix $ λ n x, dmatch n with
+  | 0 := 1
+  | 1 := 1
+  | (m + 2) := x ⟨m + 1, _⟩ + x ⟨m, _⟩
+end
+
 
 /-
-2. Any two rational numbers may be combined in four distinct
-ways, referred to respectively as the four processes (or basic operations)
-of Addition, Subtraction, Multiplication, and Division. These operations
-can always be carried out to one definite result, with the single exception
-of division by 0, which is undefined and should be regarded as an entirely
-impossible or meaningless process; the four processes also obey a number
-of simple laws, the so-called Fundamental Laws of Arithmetic, and further
-rules cleducible therefrom.
-
-These too we shall regard as known, and state, concisely, those
-Fundamental Laws or Axioms of Arithmetic from which all the others may
-be inferred, by purely formal rules (i. e. by the laws of pure logic).
-
-I. Addition. 1. Every pair of numbers a and b has invariably associ-
-ated with it a third, c, called their sum and denoted by a + b.
-
-2. a = a', b b' always implv a \ b -- a' + b'.
-
-3. Invariably, a + b b + (Commutative Law).
-
-4. Invariably, (a + b) + c = a + (b + c) (Associative Law).
-
-5. a < b always implies a + c < b + c (Law of Monotony).
-
-II. Subtraction.
-
-To every pair of numbers a and b there corresponds a third number
-c, such that a + c b.
-
-
-
-8 a > b and b < a are merely two different expressions of the same relation.
-Strictly speaking, the one symbol "<" would therefore suffice.
-
-3 With regard to this seemingly trivial "law" cf. footnote 11, p. 9, remark 1 , p. 28,
-and footnote 24, p. 29.
-
-4 To express that one of the relations of order: a < b, a 6, or a > b, does
-not hold, we write, respectively, a^b ("greater than or equal to", "at least equal
-to", "not less than"), a -t= b ("unequal to", "different from") or a *- 6. Kach of
-these statements (negations) definitely excludes one of the three relations and leaves
-undecided which of the other two holds good.
-
-
-
-6 Chapter I. Principles of the theory of real numbers.
-
-III. Multiplication.
-
-1. To every pair of numbers a and b there corresponds a third
-number c, called their product and denoted by a b.
-
-2. a a', b b' always implies a b = a' b'.
-
-3. In all cases ab = ba (Commutative Law).
-
-4. In all cases (ab) c =-- a (b c) (Associative Law).
-
-5. In all cases (a + b) c a c + b c (Distributive Law).
-
-6. a < b implies, provided c is positive, a c <.b c (Law of Mono-
-tony).
-
-IV. Division.
-
-To every pair of numbers a and b of which the first is not there
-corresponds a third number c, such that a c = b.
-
-As already remarked, all the known rules of arithmetic, and
-hence ultimately all mathematical results, are deduced from these
-few laws, with the help of the laws of pure logic alone. Among these
-laws, one is distinguished by its primarily mathematical character, namely
-the
-
-V. Law of Induction, which may be reckoned among the fundamental
-laws of arithmetic and is normally stated as follows:
-
-If a set S 3)t of natural numbers includes the number 1, and if, every
-time a certain natural number n and all those less than n can be taken to
-belong to the aggregate, the number (n h 1) rniy be inferred also to belong
-to it, then $)J includes all the natural numbers.
-
-This law of induction itself follows quite easily from the following
-theorem, which appears even more obvious and is therefore normally
-called the fundamental law of the natural numbers :
-
-Law of the Natural Numbers. In every set of natural numbers that
-is not "empty" there is always a number less than all the rest.
-
-For if, according to the hypotheses of the Induction Law, we con-
-sider the set 9i of natural numbers not belonging to $)?, this set W must
-be "empty", that is, $ft must contain all the natural numbers. For other-
-wise, by the law of the natural numbers, 1U would include a number less
-than all the rest. This least number would exceed 1, for it was assumed
-that 1 belongs to s l)i; hence it could be denoted by n + 1. Then n would
-belong to 3)i, but (n + 1) would not, which contradicts the hypotheses
-in the law of induction. 5
-
-In applications it is usually an advantage to be able to make state-
-ments not merely about the natural numbers but about any whole numbers.
-
-
-
-6 The following rather more general form of the law of induction can be
-deduced in exactly the same way from the fundamental law of the natural numbers.
-If set >j.)j of natural numbers includes the number 1, and if the number (n -|- 1)
-can be proved to belong to the aggregate provided the number n does, then Wl con-
-tains all the natural numbers.
-
-
-
-1. The system of rational numbers and its gaps. 7
-
-The laws then take the following forms, obviously equivalent to those
-above :
-
-Law of Induction. If a statement involves a natural number n (e. g.
-"if n ^ 10, then 2 W > n*", or the like) and if
-
-a) this statement is correct for n = p t
-and
-
-b) its correctness for n = p, p -{- I, . . . , k (where k is any natural
-number >; p) always implies its correctness for n = k -f- 1, then the
-statement is correct for every natural number ^ p.
-
-Law of Integers. In every set of integers all r p that is not "empty",
-there is always a number less than all the rest. 6
-
-We will lastly mention a theorem susceptible, in the domain of
-rational numbers, of immediate proof, although it becomes axiomatic
-in character very soon after this domain is left; namely the
-
-VI. Theorem of Eudoxus.
-
-If a and b are any two positive rational numbers, then a natural
-number n always exists 7 such that n b > a.
-
-The four ways of combining two rational numbers give in every
-case as the result another rational number. In this sense the system
-of rational numbers forms a closed aggregate (naturlicher Rationalitats-
-bereich or number corpus). This property of forming a closed system \\ith
-respect to the four rules is obviously not possessed by the aggregate of
-all natural numbers, or of all positive and negative integers. These are,
-so to speak, too sparsely sown to meet all the demands which the four
-rules make upon them.
-
-This closed aggregate of all rational numbers and the laws which hold
-in it, are then all that we regard as given, known, secured.
-
-As that type of argument which makes use of inequalities and absolute values 3.
-may be a little unfamiliar to some, its most important rules may be set down here,
-briefly and without proof:
-
-I. Inequalities. Here all follows from the laws of order and monotony.
-In particular
-
-1. The statements in the laws of monotony are reversible; e. g. a -f- c
-< b -|- c always implies a < 6; and so does a c < b c , provided c > 0.
-
-2. a < b, c < d always implies a -f c < b -f d.
-
-3. a < b, c < d implies, provided b and c are positive, a c < b d.
-
-4. a < b a! ways implies b < a,
-
-. . . 11
-
-and also, provided a is positive, , < -.
-
-b a
-
-
-
-To reduce these forms of the laws to the previous ones, we need only con-
-sider the natural numbers m such that, in the one case, the statement in question
-is correct for n (p 1) -f m, or, in the other, that (p 1) -f m belongs to the
-non-" empty" set under consideration.
-
-7 This theorem is usually, but incorrectly, ascribed to Archimedes ; it is already
-to be found in Euclid, Elements, Book V, Def. 4.
-
-
-
-8 Chapter I. Principles of the theory of real numbers.
-
-Also these theorems, as well as the laws of order and monotony, hold (with
-appropriate modifications) when the signs "S", "-*", "__-" and <c ^= l> are sub-
-stituted for "<", provided we maintain the assumptions that c> b and a are posi-
-tive, in 1, 3, and 4 respectively.
-
-II. Absolute values. Definition: By \ a |, the absolute value (or modulus)
-of a, is meant that one of the two numbers -\-a and a which is positive, sup-
-posing a 3= 0; and the number 0, if a 0. (Hence | | -^ and if a = 0, | a \ > 0.)
-
-The following theorems hold, amongst others:
-
-
-
-3.
-
-
-
-a\ --- \ - a\. 2. | ab \ =-
-
-1
-
-
-
-a
-
-
-
-a
-
-
-
-, provided a =f= 0.
-
-
-
-J 4. \ a + b [ :_j, \ a\ + \ b \; |a + 6|^|a|- |6|, and indeed | a + b \
-
-^ \a\ -|6|(.
-
-5. The two relations | a \ < r and r < a < r are exactly equivalent;
-similarly for | x a \ < r and a r <. x < a -\- r.
-
-0. | a b | is the distance between the points a and b, with the represen-
-tation of numbers on a straight line described immediately below.
-
-Proof of the first relation in 4: a ^ \ a |, b < | b |, so that by 3, I, 2,
-(a -\ b) ^ | a | -f- | 6 |, and hence | a -\ b \ ^ | a \ -}- | b |.
-
-We also assume it to be known how the relations of magnitude
-between rational numbers may be illustrated graphically by relations
-of positions between points on a straight line. On a straight line or
-number-axis, any two distinct points arc marked, one O, the origin (0)
-and one U 9 the unit point (1). The point P which is to represent a number
-
-a = *- (q > 0, p ^ 0, both integers) is obtained by marking off on the
-
-axis, | p | times in succession, beginning at O, the <? th part of the dis-
-tance O U (immediately constructed by elementary geometry) either in
-the direction O U, if p > 0, or if p is negative, in the opposite direction.
-This point 8 we call for brevity the point a, and the totality of points
-corresponding in this way to all rational numbers we shall refer
-to as the rational points of the axis. The straight line is usually
-thought of as drawn from left to right and U chosen to the right of O.
-In this case, the words positive and negative obviously become equiva-
-lents of the phrases: to the right of O and to the left of O, respectively;
-and, more generally, a < b signifies that a lies to the left of b, b to the
-right of a. This mode of expression may often assist us in illustrating
-abstract relations between numbers.
-
-
-
-8 The position of this point is independent of the particular representation
-of the number a t i. e. if a p'/q' is another representation with </' *> and p' ^
-both integers, and if the construction is performed with q', p' in place of q t p, the
-same point P is obtained.
-
-
-
-1. The system of rational numbers and its gaps. 9
-
-This completes the sketch of what we propose to take as the
-previously secured foundation of our subject. We shall now regard
-the description of these foundations as characterizing the concept of
-number; in other words, we shall call any system of conceptually well-
-distinguished objects (elements, symbols) a number system, and its
-elements numbers, if to put it quite briefly for the moment we
-can operate with them in essentially the same ways as we do with rational
-numbers.
-
 We proceed to give this somewhat inaccurate statement a precise
 formulation.
 
@@ -2481,3 +2223,5 @@ g) < v, < Vi ,3'nM i (V w h 3' w ), V, H _, -- Vw '' Vw .
 Evaluate the numbers defined in examples (a) and (g). (Cf. problems 91
 and 92.)
 -/
+
+end knopp

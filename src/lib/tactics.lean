@@ -4,6 +4,7 @@ import tactic.interactive
 import tactic.find
 import tactic.tidy
 import tactic.well_founded_tactics
+import lib.tactic.dmatch
 
 open lean
 open lean.parser
